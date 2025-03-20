@@ -25,7 +25,8 @@
     "react-tsparticles": "^2.9.3",
     "tsparticles": "^2.9.3",
     "unique-names-generator": "^4.7.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "xlsx": "^0.18.5"
   },
   "scripts": {
     "start": "react-scripts start",
