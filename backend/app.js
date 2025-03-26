@@ -17,9 +17,9 @@ connectDB();
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://iiitl-bachat.vercel.app/",
+  "https://iiitl-bachat.vercel.app",
   "https://iiitl-bachat-git-main-khushal-midhas-projects.vercel.app",
-  "https://iiitl-bachat-khushal-midhas-projects.vercel.app/"
+  "https://iiitl-bachat-khushal-midhas-projects.vercel.app"
   // add more origins as needed
 ];
 
