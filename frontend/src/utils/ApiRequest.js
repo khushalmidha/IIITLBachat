@@ -1,4 +1,4 @@
-const host = "https://expense-tracker-app-knl1.onrender.com";
+const host = "https://iiitlbachat.onrender.com";
 // const host = "http://localhost:3001";
 export const setAvatarAPI = `${host}/api/auth/setAvatar`;
 export const registerAPI = `${host}/api/auth/register`;
