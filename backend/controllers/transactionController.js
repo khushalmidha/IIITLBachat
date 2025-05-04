@@ -67,7 +67,7 @@ export const addTransactionController = async (req, res) => {
 
 export const getAllTransactionController = async (req, res) => {
   try {
-    const { userId, type, frequency, startDate, endDate } = req.body;
+    const { userId, type, frequency, startDate, endDate, category } = req.body;
 
     console.log(userId, type, frequency, startDate, endDate);
 
@@ -88,12 +88,14 @@ export const getAllTransactionController = async (req, res) => {
     if (type !== 'all') {
       query.transactionType = type;
     }
-
+    if(category && category!==""){
+      query.category = category
+    }
     // Add date conditions based on 'frequency' and 'custom' range
     if (frequency !== 'custom') {
       query.date = {
         $gt: moment().subtract(Number(frequency), "days").toDate()
-      };
+      }; 
     } else if (startDate && endDate) {
       query.date = {
         $gte: moment(startDate).toDate(),

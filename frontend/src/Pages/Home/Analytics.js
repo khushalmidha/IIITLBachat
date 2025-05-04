@@ -1,13 +1,10 @@
 import React from "react";
-// import CardBox from "./CardBox";
 import { Container, Row } from "react-bootstrap";
 import CircularProgressBar from "../../components/CircularProgressBar";
 import LineProgressBar from "../../components/LineProgressBar";
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
-// import MovingIcon from '@mui/icons-material/Moving';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-
 
 const Analytics = ({ transactions }) => {
   const TotalTransactions = transactions.length;
@@ -18,12 +15,14 @@ const Analytics = ({ transactions }) => {
     (item) => item.transactionType === "expense"
   );
 
-  let totalIncomePercent =
-    (totalIncomeTransactions.length / TotalTransactions) * 100;
-  let totalExpensePercent =
-    (totalExpenseTransactions.length / TotalTransactions) * 100;
-
-  // console.log(totalIncomePercent, totalExpensePercent);
+  // Fix for NaN - Prevent division by zero
+  let totalIncomePercent = TotalTransactions > 0 
+    ? (totalIncomeTransactions.length / TotalTransactions) * 100
+    : 0;
+  
+  let totalExpensePercent = TotalTransactions > 0
+    ? (totalExpenseTransactions.length / TotalTransactions) * 100
+    : 0;
 
   const totalTurnOver = transactions.reduce(
     (acc, transaction) => acc + transaction.amount,
@@ -36,8 +35,14 @@ const Analytics = ({ transactions }) => {
     .filter((item) => item.transactionType === "expense")
     .reduce((acc, transaction) => acc + transaction.amount, 0);
 
-  const TurnOverIncomePercent = (totalTurnOverIncome / totalTurnOver) * 100;
-  const TurnOverExpensePercent = (totalTurnOverExpense / totalTurnOver) * 100;
+  // Fix for NaN - Prevent division by zero
+  const TurnOverIncomePercent = totalTurnOver > 0 
+    ? (totalTurnOverIncome / totalTurnOver) * 100
+    : 0;
+  
+  const TurnOverExpensePercent = totalTurnOver > 0 
+    ? (totalTurnOverExpense / totalTurnOver) * 100
+    : 0;
 
   const categories = [
     "Groceries",
@@ -65,11 +70,15 @@ const Analytics = ({ transactions }) => {
     "Other": '#F45B69',
   };
   
-  
+  // Function to safely calculate percentage
+  const safeCalculatePercent = (amount, total) => {
+    if (total <= 0) return 0;
+    return (amount / total) * 100;
+  };
 
   return (
     <>
-      <Container className="mt-5 ">
+      <Container className="mt-5">
         <Row>
           <div className="col-lg-3 col-md-6 mb-4">
             <div className="card h-100">
@@ -78,7 +87,7 @@ const Analytics = ({ transactions }) => {
                 {TotalTransactions}
               </div>
               <div className="card-body">
-                <h5 className="card-title " style={{color: "green"}}>
+                <h5 className="card-title" style={{color: "green"}}>
                   Income: <ArrowDropUpIcon/>{totalIncomeTransactions.length}
                 </h5>
                 <h5 className="card-title" style={{color: "red"}}>
@@ -104,7 +113,7 @@ const Analytics = ({ transactions }) => {
 
           <div className="col-lg-3 col-md-6 mb-4">
             <div className="card h-100">
-              <div className="card-header bg-black text-white ">
+              <div className="card-header bg-black text-white">
                 <span style={{ fontWeight: "bold" }}>Total TurnOver:</span>{" "}
                 {totalTurnOver}
               </div>
@@ -130,51 +139,74 @@ const Analytics = ({ transactions }) => {
 
           <div className="col-lg-3 col-md-6 mb-4">
             <div className="card h-100">
-              <div className="card-header  bg-black text-white">
+              <div className="card-header bg-black text-white">
                 <span style={{ fontWeight: "bold" }}>Categorywise Income</span>{" "}
               </div>
               <div className="card-body">
-                {categories.map(category => {
-                  const income = transactions.filter(transaction => transaction.transactionType === "credit" && transaction.category === category).reduce((acc, transaction) => acc + transaction.amount, 0)
+                {categories.map((category, index) => {
+                  const income = transactions
+                    .filter(transaction => transaction.transactionType === "credit" && transaction.category === category)
+                    .reduce((acc, transaction) => acc + transaction.amount, 0);
                   
-                  const incomePercent = (income/ totalTurnOver) * 100;
+                  // Fix for NaN - Use safe calculation function
+                  const incomePercent = safeCalculatePercent(income, totalTurnOver);
 
- 
-
-                  return(
-                    <>
-                    {income > 0 &&
-                      (<LineProgressBar label={category} percentage={incomePercent.toFixed(0)} lineColor={colors[category]} />)
-
-                    }
-                    </>
-                  )
+                  return (
+                    <React.Fragment key={`income-${index}`}>
+                      {income > 0 && (
+                        <LineProgressBar 
+                          label={category} 
+                          percentage={incomePercent.toFixed(0)} 
+                          lineColor={colors[category]} 
+                        />
+                      )}
+                    </React.Fragment>
+                  );
                 })}
+                
+                {/* Show message if no income transactions */}
+                {totalIncomeTransactions.length === 0 && (
+                  <div className="text-center text-muted py-3">
+                    No income transactions to display
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
           <div className="col-lg-3 col-md-6 mb-4">
             <div className="card h-100">
-              <div className="card-header  bg-black text-white">
+              <div className="card-header bg-black text-white">
                 <span style={{ fontWeight: "bold" }}>Categorywise Expense</span>{" "}
               </div>
               <div className="card-body">
-                {categories.map(category => {
-                  const expenses = transactions.filter(transaction => transaction.transactionType === "expense" && transaction.category === category).reduce((acc, transaction) => acc + transaction.amount, 0)
+                {categories.map((category, index) => {
+                  const expenses = transactions
+                    .filter(transaction => transaction.transactionType === "expense" && transaction.category === category)
+                    .reduce((acc, transaction) => acc + transaction.amount, 0);
                   
-                  const expensePercent = (expenses/ totalTurnOver) * 100;
+                  // Fix for NaN - Use safe calculation function
+                  const expensePercent = safeCalculatePercent(expenses, totalTurnOver);
 
-
-                  return(
-                    <>
-                    {expenses > 0 &&
-                      (<LineProgressBar label={category} percentage={expensePercent.toFixed(0)} lineColor={colors[category]}/>)
-
-                    }
-                    </>
-                  )
+                  return (
+                    <React.Fragment key={`expense-${index}`}>
+                      {expenses > 0 && (
+                        <LineProgressBar 
+                          label={category} 
+                          percentage={expensePercent.toFixed(0)} 
+                          lineColor={colors[category]} 
+                        />
+                      )}
+                    </React.Fragment>
+                  );
                 })}
+                
+                {/* Show message if no expense transactions */}
+                {totalExpenseTransactions.length === 0 && (
+                  <div className="text-center text-muted py-3">
+                    No expense transactions to display
+                  </div>
+                )}
               </div>
             </div>
           </div>

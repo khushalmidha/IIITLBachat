@@ -13,8 +13,10 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import BarChartIcon from "@mui/icons-material/BarChart";
+import TimelineIcon from '@mui/icons-material/Timeline';
 import Analytics from "./Analytics";
-import * as XLSX from "xlsx"
+import * as XLSX from "xlsx";
+import MonthlyCharts from './MonthlyCharts';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -34,7 +36,7 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [refresh, setRefresh] = useState(false);
-  const [frequency, setFrequency] = useState("7");
+  const [frequency, setFrequency] = useState("custom");
   const [type, setType] = useState("all");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -220,10 +222,6 @@ const Home = () => {
     setFrequency("7");
   };
 
-
-
-
-
   useEffect(() => {
     if (!avatar) {
       return;
@@ -269,6 +267,10 @@ const Home = () => {
     setView("chart");
   };
 
+  const handleLineChartClick = (e) => {
+    setView("line");
+  };
+
   return (
     <>
       <Header />
@@ -284,54 +286,63 @@ const Home = () => {
             className="mt-3"
           >
             <div className="filterRow">
-              <div className="text-white">
-                <Form.Group className="mb-3" controlId="formSelectFrequency">
-                  <Form.Label>Select Frequency</Form.Label>
-                  <Form.Select
-                    name="frequency"
-                    value={frequency}
-                    onChange={handleChangeFrequency}
-                  >
-                    <option value="7">Current Week</option>
-                    <option value="30">Current Month</option>
-                    <option value="365">Current Year</option>
-                    <option value="custom">Custom</option>
-                  </Form.Select>
-                </Form.Group>
-              </div>
+              {view !== "line" && (
+                <div className="text-white">
+                  <Form.Group className="mb-3" controlId="formSelectFrequency">
+                    <Form.Label>Select Frequency</Form.Label>
+                    <Form.Select
+                      name="frequency"
+                      value={frequency}
+                      onChange={handleChangeFrequency}
+                    >
+                      <option value="custom">All</option>
+                      <option value="7">Current Week</option>
+                      <option value="30">Current Month</option>
+                      <option value="365">Current Year</option>
+                    </Form.Select>
+                  </Form.Group>
+                </div>
+              )}
 
-              <div className="text-white type">
-                <Form.Group className="mb-3" controlId="formSelectFrequency">
-                  <Form.Label>Type</Form.Label>
-                  <Form.Select
-                    name="type"
-                    value={type}
-                    onChange={handleSetType}
-                  >
-                    <option value="all">All</option>
-                    <option value="expense">Expense</option>
-                    <option value="credit">Earned</option>
-                  </Form.Select>
-                </Form.Group>
-              </div>
+              {view !== "line" && (
+                <div className="text-white type">
+                  <Form.Group className="mb-3" controlId="formSelectFrequency">
+                    <Form.Label>Type</Form.Label>
+                    <Form.Select
+                      name="type"
+                      value={type}
+                      onChange={handleSetType}
+                    >
+                      <option value="all">All</option>
+                      <option value="expense">Expense</option>
+                      <option value="credit">Earned</option>
+                    </Form.Select>
+                  </Form.Group>
+                </div>
+              )}
 
               <div className="text-white iconBtnBox">
                 <FormatListBulletedIcon
                   sx={{ cursor: "pointer" }}
                   onClick={handleTableClick}
-                  className={`${view === "table" ? "iconActive" : "iconDeactive"
-                    }`}
+                  className={`${view === "table" ? "iconActive" : "iconDeactive"}`}
                 />
                 <BarChartIcon
                   sx={{ cursor: "pointer" }}
                   onClick={handleChartClick}
-                  className={`${view === "chart" ? "iconActive" : "iconDeactive"
-                    }`}
+                  className={`${view === "chart" ? "iconActive" : "iconDeactive"}`}
+                />
+                <TimelineIcon
+                  sx={{ cursor: "pointer" }}
+                  onClick={handleLineChartClick}
+                  className={`${view === "line" ? "iconActive" : "iconDeactive"}`}
                 />
               </div>
-              <div>
-                <Button className="addNew" onClick={downloadDoc}>Download</Button>
-              </div>
+              {view !== "line" && (
+                <div>
+                  <Button className="addNew" onClick={downloadDoc}>Download</Button>
+                </div>
+              )}
               <div>
                 <Button onClick={handleShow} className="addNew">
                   Add New
@@ -438,7 +449,7 @@ const Home = () => {
             </div>
             <br style={{ color: "white" }}></br>
 
-            {frequency === "custom" ? (
+            {frequency === "custom" && view !== "line" ? (
               <>
                 <div className="date">
                   <div className="form-group">
@@ -476,18 +487,28 @@ const Home = () => {
               <></>
             )}
 
-            <div className="containerBtn">
-              <Button variant="primary" onClick={handleReset}>
-                Reset Filter
-              </Button>
-            </div>
+            {view !== "line" && (
+              <div className="containerBtn">
+                <Button variant="primary" onClick={handleReset}>
+                  Reset Filter
+                </Button>
+              </div>
+            )}
             {view === "table" ? (
               <>
                 <TableData data={transactions} user={cUser} />
               </>
-            ) : (
+            ) : view === "chart" ? (
               <>
                 <Analytics transactions={transactions} user={cUser} />
+              </>
+            ) : (
+              <>
+                <MonthlyCharts 
+                  userId={cUser?._id} 
+                  frequency="custom"
+                  type="all"
+                />
               </>
             )}
             <ToastContainer />

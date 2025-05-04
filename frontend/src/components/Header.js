@@ -63,7 +63,7 @@ const Header = () => {
         />
         <Navbar className="navbarCSS" collapseOnSelect expand="lg" style={{ position: 'relative', zIndex: 2 }}>
           <Navbar.Brand href="/" className="text-white navTitle">
-            Expense Management System
+            IIITL Bachat
           </Navbar.Brand>
           <Navbar.Toggle
             aria-controls="basic-navbar-nav"
