@@ -42,6 +42,11 @@ const Home = () => {
   const [endDate, setEndDate] = useState(null);
   const [view, setView] = useState("table");
   const [avatar, setAvatar] = useState(false);
+  const [investmentPlan, setInvestmentPlan] = useState({
+    shortTerm: {},
+    mediumTerm: {},
+    longTerm: {}
+  });
 
   const handleStartChange = (date) => {
     setStartDate(date);
@@ -73,6 +78,21 @@ const Home = () => {
     avatarFunc();
     setAvatar(true);
   }, [navigate]);
+
+  useEffect(() => {
+    if (cUser?._id) {
+      const savedPlan = localStorage.getItem(`investmentPlan:${cUser._id}`);
+      if (savedPlan) {
+        setInvestmentPlan(JSON.parse(savedPlan));
+      }
+    }
+  }, [cUser?._id]);
+
+  useEffect(() => {
+    if (cUser?._id) {
+      localStorage.setItem(`investmentPlan:${cUser._id}`, JSON.stringify(investmentPlan));
+    }
+  }, [investmentPlan, cUser?._id]);
 
   const [values, setValues] = useState({
     title: "",
