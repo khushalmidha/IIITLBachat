@@ -92,7 +92,7 @@ const SmartFinancePanel = ({ transactions, onReceiptParsed }) => {
                 mimeType: file.type || "image/jpeg",
             });
 
-            onReceiptParsed(data.transaction);
+            onReceiptParsed(data.transactions || (data.transaction ? [data.transaction] : []));
         } catch (err) {
             setError(err.response?.data?.message || "Could not read the receipt");
         } finally {
@@ -163,7 +163,7 @@ const SmartFinancePanel = ({ transactions, onReceiptParsed }) => {
                         <Card.Body>
                             <Card.Title>Receipt Autofill</Card.Title>
                             <Card.Text>
-                                Upload a credit/debit receipt and Gemini will map it into the app fields.
+                                Upload a credit/debit PDF or receipt and Gemini will add every transaction row it finds.
                             </Card.Text>
                             <Form.Group controlId="receiptUpload">
                                 <Form.Control

@@ -305,17 +305,57 @@ const Home = () => {
     setView("smart");
   };
 
-  const handleReceiptParsed = (transaction) => {
-    setValues({
-      title: transaction.title || "",
-      amount: transaction.amount || "",
-      description: transaction.description || "",
-      category: transaction.category || "Other",
-      date: transaction.date || "",
-      transactionType: transaction.transactionType || "expense",
-    });
-    setShow(true);
-    toast.info("Receipt details filled. Review once and submit.", toastOptions);
+  const handleReceiptParsed = async (parsedTransactions) => {
+    const rows = Array.isArray(parsedTransactions)
+      ? parsedTransactions
+      : parsedTransactions
+        ? [parsedTransactions]
+        : [];
+
+    if (!rows.length) {
+      toast.error("No transaction rows found in the upload", toastOptions);
+      return;
+    }
+
+    if (!cUser?._id) {
+      toast.info("Logging in Again!!", toastOptions);
+      return navigate("/login");
+    }
+
+    setLoading(true);
+    try {
+      const results = await Promise.allSettled(
+        rows.map((transaction) =>
+          axios.post(addTransaction, {
+            title: transaction.title || "Uploaded transaction",
+            amount: transaction.amount || "",
+            description: transaction.description || "Auto-filled from uploaded document",
+            category: transaction.category || "Other",
+            date: transaction.date || new Date().toISOString().slice(0, 10),
+            transactionType: transaction.transactionType || "expense",
+            userId: cUser._id,
+          })
+        )
+      );
+
+      const addedCount = results.filter(
+        (result) => result.status === "fulfilled" && result.value?.data?.success
+      ).length;
+
+      if (addedCount) {
+        toast.success(`${addedCount} transaction${addedCount > 1 ? "s" : ""} added from upload`, toastOptions);
+        setRefresh((current) => !current);
+      }
+
+      if (addedCount < rows.length) {
+        const failedCount = rows.length - addedCount;
+        toast.error(`${failedCount} row${failedCount > 1 ? "s" : ""} could not be added`, toastOptions);
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Could not add uploaded transactions", toastOptions);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

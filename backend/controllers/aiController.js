@@ -1,7 +1,11 @@
 const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
-const safeNumber = (value) => Number(value || 0);
+const safeNumber = (value) => {
+  if (typeof value === "number") return value;
+  const cleaned = String(value || "").replace(/[^0-9.-]/g, "");
+  return Number(cleaned || 0);
+};
 
 const normalizeTransaction = (raw = {}) => {
   const transactionType = String(raw.transactionType || raw.type || "")
@@ -39,6 +43,18 @@ const normalizeCategory = (category = "") => {
 };
 
 const normalizeDate = (date) => {
+  if (typeof date === "string") {
+    const match = date.trim().match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{2,4})$/);
+    if (match) {
+      const [, day, month, yearPart] = match;
+      const year = yearPart.length === 2 ? `20${yearPart}` : yearPart;
+      const parsed = new Date(`${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`);
+      if (!Number.isNaN(parsed.getTime())) {
+        return parsed.toISOString().slice(0, 10);
+      }
+    }
+  }
+
   const parsed = date ? new Date(date) : new Date();
   if (Number.isNaN(parsed.getTime())) {
     return new Date().toISOString().slice(0, 10);
@@ -73,12 +89,32 @@ const callGemini = async (contents, generationConfig = {}) => {
 
 const parseJsonFromText = (text) => {
   const cleaned = text.replace(/```json|```/g, "").trim();
+  try {
+    return JSON.parse(cleaned);
+  } catch (err) {
+    // Fall back to extracting a JSON object from verbose model output.
+  }
+
   const firstBrace = cleaned.indexOf("{");
   const lastBrace = cleaned.lastIndexOf("}");
   if (firstBrace === -1 || lastBrace === -1) {
     throw new Error("Gemini did not return valid JSON");
   }
   return JSON.parse(cleaned.slice(firstBrace, lastBrace + 1));
+};
+
+const normalizeTransactions = (raw) => {
+  const rows = Array.isArray(raw)
+    ? raw
+    : Array.isArray(raw?.transactions)
+      ? raw.transactions
+      : Array.isArray(raw?.items)
+        ? raw.items
+        : [raw];
+
+  return rows
+    .map((item) => normalizeTransaction(item))
+    .filter((item) => item.amount > 0);
 };
 
 export const parseReceiptController = async (req, res) => {
@@ -89,12 +125,15 @@ export const parseReceiptController = async (req, res) => {
     }
 
     const prompt = `
-Extract one financial transaction from this receipt or bank message.
-Return only JSON with these exact keys:
-title, amount, description, category, date, transactionType, confidence.
+Extract every financial transaction row from this receipt, statement, PDF table, or bank message.
+Read the full document, including all pages, and do not stop after the first row.
+Ignore headings, balances, subtotals, opening/closing balance rows, and duplicate summary totals.
+Return only JSON in this exact shape:
+{"transactions":[{"title":"","amount":0,"description":"","category":"","date":"","transactionType":"","confidence":0}]}
 category must be one of Groceries, Rent, Salary, Tip, Food, Medical, Utilities, Entertainment, Transportation, Other.
 transactionType must be credit or expense.
-If the receipt format is unusual, infer the closest valid values and explain uncertainty only in description.
+If a document has a table, create one transaction per table row that represents actual money movement.
+If the format is unusual, infer the closest valid values and explain uncertainty only in description.
 `;
 
     const text = await callGemini([
@@ -102,22 +141,23 @@ If the receipt format is unusual, infer the closest valid values and explain unc
         role: "user",
         parts: [
           { text: prompt },
-          { inline_data: { mime_type:mimeType, data: fileBase64 } },
+          { inline_data: { mime_type: mimeType, data: fileBase64 } },
         ],
       },
     ], { responseMimeType: "application/json" });
 
-    const parsed = normalizeTransaction(parseJsonFromText(text));
-    if (!parsed.amount) {
+    const transactions = normalizeTransactions(parseJsonFromText(text));
+    if (!transactions.length) {
       return res.status(422).json({
         success: false,
-        message: "Could not find an amount in the uploaded receipt",
+        message: "Could not find transaction rows in the uploaded document",
       });
     }
 
     return res.status(200).json({
       success: true,
-      transaction: parsed,
+      transaction: transactions[0],
+      transactions,
       raw: text,
     });
   } catch (err) {
