@@ -1,5 +1,5 @@
 // LoginPage.js
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import Particles from "react-tsparticles";
 import { loadFull } from "tsparticles";
@@ -9,7 +9,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { loginAPI } from "../../utils/ApiRequest";
-
+import GoogleAuthButton from "./GoogleAuthButton";
 const Login = () => {
   const navigate = useNavigate();
 
@@ -26,7 +26,7 @@ const Login = () => {
     password: "",
   });
 
-  const toastOptions = {
+   const toastOptions = useMemo(() => ({
     position: "bottom-right",
     autoClose: 2000,
     hideProgressBar: false,
@@ -35,11 +35,21 @@ const Login = () => {
     draggable: true,
     progress: undefined,
     theme: "dark",
-  };
+  }), []);
 
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
+
+  const handleGoogleSuccess = useCallback((data) => {
+    localStorage.setItem("user", JSON.stringify(data.user));
+    toast.success(data.message, toastOptions);
+    navigate("/");
+  }, [navigate, toastOptions]);
+
+  const handleGoogleError = useCallback((message) => {
+    toast.error(message, toastOptions);
+  }, [toastOptions]);
 
   const handleSubmit = async (e) => {
     try{e.preventDefault();
@@ -205,7 +215,10 @@ const Login = () => {
                 >
                   {loading ? "Signin…" : "Login"}
                 </Button>
-
+              <GoogleAuthButton
+                  onSuccess={handleGoogleSuccess}
+                  onError={handleGoogleError}
+                />
                 <p className="mt-3" style={{ color: "#9d9494" }}>
                   Don't Have an Account?{" "}
                   <Link to="/register" className="text-white lnk">

@@ -104,28 +104,41 @@ const SetAvatar = () => {
     });
   };
 
-  const setProfilePicture = async () => {
+   const setProfilePicture = async () => {
     if (selectedAvatar === undefined) {
       toast.error("Please select an avatar", toastOptions);
     } else {
-      const user = JSON.parse(localStorage.getItem("user"));
-      // console.log(user);
+      try {
+        setLoading(true);
+        const user = JSON.parse(localStorage.getItem("user"));
 
-      const { data } = await axios.post(`${setAvatarAPI}/${user._id}`, {
-        image: imgURL[selectedAvatar],
-      });
+        if (!user?._id) {
+          toast.error("Please login again", toastOptions);
+          localStorage.removeItem("user");
+          navigate("/login");
+          return;
+        }
 
-      if (data.isSet) {
-        user.isAvatarImageSet = true;
-        user.avatarImage = data.image;
-        localStorage.setItem("user", JSON.stringify(user));
-        toast.success("Avatar selected successfully", toastOptions);
-        navigate("/");
-      } else {
-        toast.error("Error Setting avatar, Please Try again", toastOptions);
+        const { data } = await axios.post(`${setAvatarAPI}/${user._id}`, {
+          image: imgURL[selectedAvatar],
+        });
+
+        if (data.success && data.isSet) {
+          localStorage.setItem("user", JSON.stringify(data.user));
+          toast.success("Avatar selected successfully", toastOptions);
+          navigate("/");
+        } else {
+          toast.error(data.message || "Error setting avatar, please try again", toastOptions);
+        }
+      } catch (err) {
+        toast.error(err.response?.data?.message || "Error setting avatar, please try again", toastOptions);
+      } finally {
+        setLoading(false);
       }
     }
   };
+
+
 
   const particlesInit = useCallback(async (engine) => {
     // console.log(engine);
@@ -265,6 +278,7 @@ const SetAvatar = () => {
                 </div>
                 <select
                   onChange={handleSpriteChange}
+                  value={selectedSprite}
                   className="form-select mt-5"
                 >
                   {sprites.map((sprite, index) => (

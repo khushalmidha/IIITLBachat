@@ -7,13 +7,17 @@ import helmet from "helmet";
 import morgan from "morgan";
 import transactionRoutes from "./Routers/Transactions.js";
 import userRoutes from "./Routers/userRouter.js";
+import aiRoutes from "./Routers/aiRouter.js";
 
 dotenv.config({ path: "./.env" });
 const app = express();
 
-const port = process.env.PORT;
+const port = process.env.PORT || 3001;
 
 connectDB();
+connectDB().catch((err) => {
+  console.error(`MongoDB connection failed: ${err.message}`);
+});
 
 const allowedOrigins = [
   "http://localhost:3000",
@@ -24,7 +28,7 @@ const allowedOrigins = [
 ];
 
 // Middleware
-app.use(express.json());
+app.use(express.json({ limit: "12mb" }));
 app.use(
   cors({
     origin: allowedOrigins,
@@ -35,12 +39,15 @@ app.use(
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("dev"));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "12mb" }));
+
+
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Router
 app.use("/api/v1", transactionRoutes);
 app.use("/api/auth", userRoutes);
+app.use("/api/ai", aiRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

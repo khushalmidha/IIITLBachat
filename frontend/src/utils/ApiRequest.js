@@ -1,9 +1,14 @@
-const host = "https://iiitlbachat.onrender.com";
-// const host = "http://localhost:3001";
+const host = process.env.REACT_APP_API_URL || "http://localhost:3001";
 export const setAvatarAPI = `${host}/api/auth/setAvatar`;
 export const registerAPI = `${host}/api/auth/register`;
 export const loginAPI = `${host}/api/auth/login`;
+export const googleAuthAPI = `${host}/api/auth/google`;
 export const addTransaction = `${host}/api/v1/addTransaction`;
 export const getTransactions = `${host}/api/v1/getTransaction`;
 export const editTransactions = `${host}/api/v1/updateTransaction`;
 export const deleteTransactions = `${host}/api/v1/deleteTransaction`;
+export const parseReceiptAPI = `${host}/api/ai/receipt`;
+export const financeChatAPI = `${host}/api/ai/chat`;
+export const investmentInsightsAPI = `${host}/api/ai/investments`;
+export const investmentPlanAPI = `${host}/api/ai/plans`;
+export const marketTickerAPI = `${host}/api/ai/market-ticker`;

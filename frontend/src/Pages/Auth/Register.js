@@ -1,5 +1,5 @@
 // SignupPage.js
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import "./auth.css";
 import Particles from "react-tsparticles";
@@ -10,6 +10,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { registerAPI } from "../../utils/ApiRequest";
 import axios from "axios";
+import GoogleAuthButton from "./GoogleAuthButton";
 
 const Register = () => {
 
@@ -38,7 +39,7 @@ const Register = () => {
 
   });
 
-  const toastOptions = {
+  const toastOptions = useMemo(() => ({
     position: "bottom-right",
     autoClose: 2000,
     hideProgressBar: false,
@@ -47,13 +48,22 @@ const Register = () => {
     draggable: true,
     progress: undefined,
     theme: "dark",
-  }
+  }), []);
 
   const handleChange = (e) => {
     setValues({...values , [e.target.name]: e.target.value});
   }
+   const handleGoogleSuccess = useCallback((data) => {
+    localStorage.setItem("user", JSON.stringify(data.user));
+    toast.success(data.message, toastOptions);
+    navigate("/");
+  }, [navigate, toastOptions]);
 
+  const handleGoogleError = useCallback((message) => {
+    toast.error(message, toastOptions);
+  }, [toastOptions]);
   const handleSubmit = async (e) => {
+  try{
     e.preventDefault();
 
       const {name, email, password} = values;
@@ -77,6 +87,10 @@ const Register = () => {
         toast.error(data.message, toastOptions);
         setLoading(false);
       }
+      } catch (err) {
+      toast.error(err.response?.data?.message || "Signup failed", toastOptions);
+      setLoading(false);
+    }
     };
 
   return (
@@ -182,6 +196,10 @@ const Register = () => {
                 >
                   {loading ? "Registering..." : "Signup"}
                 </Button>
+               <GoogleAuthButton
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleError}
+              />
 
               <p className="mt-3" style={{color: "#9d9494"}}>Already have an account? <Link to="/login" className="text-white lnk" >Login</Link></p>
             </div>

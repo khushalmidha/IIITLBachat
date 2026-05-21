@@ -14,10 +14,13 @@ import "react-datepicker/dist/react-datepicker.css";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import TimelineIcon from '@mui/icons-material/Timeline';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import Analytics from "./Analytics";
 import * as XLSX from "xlsx";
 import MonthlyCharts from './MonthlyCharts';
-
+import SmartFinancePanel from "./SmartFinancePanel";
+import FinanceChatWidget from "./FinanceChatWidget";
+import InvestmentTicker from "./InvestmentTicker";
 const Home = () => {
   const navigate = useNavigate();
 
@@ -38,6 +41,7 @@ const Home = () => {
   const [refresh, setRefresh] = useState(false);
   const [frequency, setFrequency] = useState("custom");
   const [type, setType] = useState("all");
+  const [category, setCategory] = useState("");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [view, setView] = useState("table");
@@ -113,6 +117,10 @@ const Home = () => {
 
   const handleSetType = (e) => {
     setType(e.target.value);
+  };
+
+  const handleSetCategory = (e) => {
+    setCategory(e.target.value);
   };
 
   const downloadDoc = async () => {
@@ -240,6 +248,7 @@ const Home = () => {
     setStartDate(null);
     setEndDate(null);
     setFrequency("7");
+    setCategory("");
   };
 
   useEffect(() => {
@@ -257,6 +266,7 @@ const Home = () => {
           startDate: startDate,
           endDate: endDate,
           type: type,
+          category: category,
         });
         const data = res.data
         console.log(data);
@@ -277,7 +287,7 @@ const Home = () => {
     };
 
     fetchAllTransactions();
-  }, [refresh, frequency, endDate, type, startDate]);
+  }, [refresh, frequency, endDate, type, startDate, category]);
 
   const handleTableClick = (e) => {
     setView("table");
@@ -287,8 +297,25 @@ const Home = () => {
     setView("chart");
   };
 
-  const handleLineChartClick = (e) => {
+   const handleLineChartClick = (e) => {
     setView("line");
+  };
+
+  const handleSmartClick = () => {
+    setView("smart");
+  };
+
+  const handleReceiptParsed = (transaction) => {
+    setValues({
+      title: transaction.title || "",
+      amount: transaction.amount || "",
+      description: transaction.description || "",
+      category: transaction.category || "Other",
+      date: transaction.date || "",
+      transactionType: transaction.transactionType || "expense",
+    });
+    setShow(true);
+    toast.info("Receipt details filled. Review once and submit.", toastOptions);
   };
 
   return (
@@ -306,7 +333,7 @@ const Home = () => {
             className="mt-3"
           >
             <div className="filterRow">
-              {view !== "line" && (
+              {view !== "line" && view !== "smart" && (
                 <div className="text-white">
                   <Form.Group className="mb-3" controlId="formSelectFrequency">
                     <Form.Label>Select Frequency</Form.Label>
@@ -324,7 +351,7 @@ const Home = () => {
                 </div>
               )}
 
-              {view !== "line" && (
+              {view !== "line" && view !== "smart" && (
                 <div className="text-white type">
                   <Form.Group className="mb-3" controlId="formSelectFrequency">
                     <Form.Label>Type</Form.Label>
@@ -336,6 +363,33 @@ const Home = () => {
                       <option value="all">All</option>
                       <option value="expense">Expense</option>
                       <option value="credit">Earned</option>
+                    </Form.Select>
+                  </Form.Group>
+                </div>
+              )}
+
+              {view !== "line" && view !== "smart" && (
+                <div className="text-white type">
+                  <Form.Group className="mb-3" controlId="formSelectCategory">
+                    <Form.Label>Category</Form.Label>
+                    <Form.Select
+                      name="category"
+                      value={category}
+                      onChange={handleSetCategory}
+                    >
+                      <option value="">All</option>
+                      <option value="Groceries">Groceries</option>
+                      <option value="Rent">Rent</option>
+                      <option value="Salary">Salary</option>
+                      <option value="Tip">Tip</option>
+                      <option value="Food">Food</option>
+                      <option value="Medical">Medical</option>
+                      <option value="Utilities">Utilities</option>
+                      <option value="Entertainment">Entertainment</option>
+                      <option value="Transportation">Transportation</option>
+                      <option value="Housing">Housing</option>
+                      <option value="General Expenses">General Expenses</option>
+                      <option value="Other">Other</option>
                     </Form.Select>
                   </Form.Group>
                 </div>
@@ -357,8 +411,13 @@ const Home = () => {
                   onClick={handleLineChartClick}
                   className={`${view === "line" ? "iconActive" : "iconDeactive"}`}
                 />
+                <AutoAwesomeIcon
+                  sx={{ cursor: "pointer" }}
+                  onClick={handleSmartClick}
+                  className={`${view === "smart" ? "iconActive" : "iconDeactive"}`}
+                />
               </div>
-              {view !== "line" && (
+              {view !== "line" && view !== "smart" && (
                 <div>
                   <Button className="addNew" onClick={downloadDoc}>Download</Button>
                 </div>
@@ -382,7 +441,7 @@ const Home = () => {
                           name="title"
                           type="text"
                           placeholder="Enter Transaction Name"
-                          value={values.name}
+                          value={values.title}
                           onChange={handleChange}
                         />
                       </Form.Group>
@@ -469,7 +528,7 @@ const Home = () => {
             </div>
             <br style={{ color: "white" }}></br>
 
-            {frequency === "custom" && view !== "line" ? (
+            {frequency === "custom" && view !== "line" && view !== "smart" ? (
               <>
                 <div className="date">
                   <div className="form-group">
@@ -507,7 +566,7 @@ const Home = () => {
               <></>
             )}
 
-            {view !== "line" && (
+            {view !== "line" && view !== "smart" && (
               <div className="containerBtn">
                 <Button variant="primary" onClick={handleReset}>
                   Reset Filter
@@ -522,7 +581,7 @@ const Home = () => {
               <>
                 <Analytics transactions={transactions} user={cUser} />
               </>
-            ) : (
+            ) : view === "line" ? (
               <>
                 <MonthlyCharts 
                   userId={cUser?._id} 
@@ -530,9 +589,16 @@ const Home = () => {
                   type="all"
                 />
               </>
+            ) : (
+              <SmartFinancePanel
+                transactions={transactions}
+                onReceiptParsed={handleReceiptParsed}
+              />
             )}
             <ToastContainer />
           </Container>
+            <InvestmentTicker />
+          <FinanceChatWidget transactions={transactions} />
         </>
       )}
     </>

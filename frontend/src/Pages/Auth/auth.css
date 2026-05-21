@@ -8,3 +8,9 @@
 .btnStyle:hover{
     background-color: rgb(75, 11, 11);
 }
+.googleAuthWrap{
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -15,10 +15,20 @@ const userSchema = new mongoose.Schema({
         unique : true,
         validate : validator.isEmail,
     },
-    password: {
+        password: {
         type: String,
-        required: [true, "Password is required"],
+        required: false,
         minlength : [6, "Password Must Be Atleast 6 characters"],
+    },
+    googleId: {
+        type: String,
+        default: "",
+        index: true,
+    },
+    authProvider: {
+        type: String,
+        enum: ["local", "google"],
+        default: "local",
     },
     isAvatarImageSet: {
         type: Boolean,
@@ -37,8 +47,6 @@ const userSchema = new mongoose.Schema({
         type:Date,
         default: Date.now,
     },
-
-    
 
 });
 

@@ -1,36 +1,36 @@
-.filterRow{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px;
+.filterRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
 
 }
 
 .data-table {
-    border-collapse: collapse;
-  }
-  
+  border-collapse: collapse;
+}
+
 .data-table thead th {
-    background-color: #f5f5f5;
+  background-color: #f5f5f5;
 }
 
-.icons-handle{
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 15px;
-    /* width: 100%; */
+.icons-handle {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 15px;
+  /* width: 100%; */
 }
 
-.date{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 10px;
+.date {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
 }
-  
+
 /* .data-table tbody tr:hover {
     background-color: #f5f5f5;
     cursor: pointer;
@@ -40,79 +40,591 @@
     background-color: #f8f8f8;
 } */
 
-.containerBtn{
-    display: flex;
-    align-items: center;
-    justify-content:center;
-    margin-bottom: 20px;
-    width: 100%;
-    margin-left: 20px;
-}
-.mobileBtn{
-    display: none !important;
+.containerBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  width: 100%;
+  margin-left: 20px;
 }
 
-.iconBtnBox{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 10px;
-    border: 2px solid white;
-    border-radius: 8px;
-    
+.mobileBtn {
+  display: none !important;
+}
+
+.iconBtnBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+  border: 2px solid white;
+  border-radius: 8px;
+
 
 }
 
-.iconActive{
-    background-color: white;
-    color: black;
+.iconActive {
+  background-color: white;
+  color: black;
 }
-.iconDeactive{
-    background-color: rgb(78, 74, 78);
-    color: black;
+
+.iconDeactive {
+  background-color: rgb(78, 74, 78);
+  color: black;
+}
+
+.smartFinancePanel {
+  margin: 18px 0 40px;
+}
+
+.smartCard {
+  border-radius: 8px !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+}
+
+.investmentHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.investmentGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.investmentOption {
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  padding: 12px;
+  min-height: 108px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #fafafa;
+}
+
+.investmentOption span {
+  font-weight: 700;
+  color: #1f2933;
+}
+
+.investmentOption strong {
+  font-size: 20px;
+  color: #106f45;
+}
+
+.investmentOption small {
+  color: #5b6470;
+}
+
+.smartLoading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  color: #475569;
+}
+
+
+.chatWindow {
+  min-height: 150px;
+  max-height: 280px;
+  overflow-y: auto;
+  border: 1px solid #e7e7e7;
+  border-radius: 8px;
+  padding: 12px;
+  background: #fbfbfb;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.planActions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.growthStrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.growthStrip span {
+  border-radius: 999px;
+  background: #edf7ff;
+  color: #123a5d;
+  padding: 6px 10px;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.planGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  margin-bottom: 10px;
+}
+
+.planCard {
+  border: 1px solid #e1e7ef;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 16px;
+  min-height: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  justify-content: space-between;
+}
+
+.planLabel {
+  display: inline-flex;
+  width: fit-content;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: #111827;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.planCard h3 {
+  margin: 10px 0 5px;
+  font-size: 24px;
+  color: #111827;
+}
+
+.planCard p {
+  margin: 0;
+  color: #556070;
+}
+
+.planNumbers {
+  border-radius: 8px;
+  padding: 12px;
+  background: #f8fafc;
+}
+
+.planNumbers strong {
+  display: block;
+  font-size: 26px;
+  color: #0f7a4f;
+}
+
+.planNumbers small {
+  color: #5b6470;
+}
+
+.assetRows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.assetRow {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+  border-bottom: 1px solid #eef2f6;
+  padding-bottom: 7px;
+}
+
+.assetRow span {
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.assetRow b {
+  color: #0d6efd;
+}
+
+.assetRow small {
+  color: #667085;
+}
+
+.chatBubble {
+  max-width: 82%;
+  padding: 9px 12px;
+  border-radius: 8px;
+  white-space: pre-wrap;
+}
+
+.chatBubble.user {
+  align-self: flex-end;
+  background: #0d6efd;
+  color: white;
+}
+
+.chatBubble.bot {
+  align-self: flex-start;
+  background: #eceff3;
+  color: #1e293b;
+}
+
+.chatForm {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.containerBtn {
+  margin-left: 0px !important;
+}
+
+.investmentHeader,
+.chatForm {
+  flex-direction: column;
+}
+
+.chatBubble {
+  max-width: 100%;
+}
+
+.financeChatWidget {
+  position: fixed;
+  right: 22px;
+  bottom: 190px;
+  z-index: 1050;
+}
+
+.roundChatButton {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0d6efd;
+  color: #ffffff;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+.roundChatButton:hover {
+  background: #094db8;
+}
+
+.floatingChatPanel {
+  width: min(360px, calc(100vw - 28px));
+  height: 480px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.34);
+  overflow: hidden;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.floatingChatHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px;
+  background: #111827;
+  color: #ffffff;
+}
+
+.floatingChatHeader span {
+  display: block;
+  font-size: 12px;
+  color: #d1d5db;
+  margin-top: 2px;
+}
+
+.floatingChatHeader button {
+  border: 0;
+  background: transparent;
+  color: #ffffff;
+  padding: 0;
+}
+
+.floatingChatBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chatHint {
+  color: #667085;
+  margin: 0;
+  font-size: 14px;
+}
+
+.floatingChatForm {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+  padding: 10px;
+  border-top: 1px solid #e5e7eb;
+  background: #ffffff;
+}
+
+.financeChatWidget {
+  right: 14px;
+  bottom: 58px;
+}
+
+.roundChatButton {
+  width: 52px;
+  height: 52px;
+}
+
+.floatingChatPanel {
+  height: 430px;
+}
+
+.investmentTicker {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  height: 160px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #101418, #05070a);
+  border-top: 1px solid rgba(255,255,255,0.12);
+  display: flex;
+  align-items: center;
+}
+
+.tickerTrack {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: max-content;
+  animation: tickerMove 25s linear infinite;
+}
+
+.tickerTrack:hover {
+  animation-play-state: paused;
+}
+
+@keyframes tickerMove {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.tickerTrack {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 18px;
+
+  width: max-content;
+
+  animation: tickerMove 25s linear infinite;
+}
+
+.tickerItem {
+  min-width: 320px;
+  height: 135px;
+
+  border-radius: 12px;
+  padding: 16px 18px;
+
+  background: #171d24;
+  border: 1px solid rgba(255,255,255,0.16);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  flex-shrink: 0;
+}
+
+/* @keyframes tickerMove {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
+} */
+
+/* .tickerTrack {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: max-content;
+  animation: tickerMove 42s linear infinite;
+}
+
+.tickerItem {
+  width: 330px;
+  min-height: 138px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  padding: 16px 18px;
+  background: #171d24;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+  color: #f8d84a;
+} */
+
+.tickerTitle {
+  font-size: 15px;
+  color: #cbd5e1;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.tickerItem strong {
+  font-size: 30px;
+  line-height: 1.1;
+  color: #ffffff;
+}
+
+.tickerGain,
+.tickerLoss {
+  width: fit-content;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-weight: 800;
+}
+
+.tickerGain {
+  color: #072f1d;
+  background: #7ef0ad;
+}
+
+.tickerLoss {
+  color: #3b0808;
+  background: #ff9b9b;
+}
+
+.tickerItem small {
+  color: #f8d84a;
+  font-size: 13px;
+}
+
+@keyframes tickerMove {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 @media only screen and (max-width: 600px) {
-    .filterRow {
-        padding: 0px !important;
-        margin-top: 0px !important;
-        display: flex;
-        gap: "5px";
-        
-    }
-    .addNew{
-        /* padding-top: 20px; */
-        display: none !important;
-    }
-    .mobileBtn{
-        display: inline-block !important;
-    }
-    .iconBtnBox{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 0px;
-        
-    }
-    
-    .date{
-        /* padding: 10px; */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: "10px";
-        flex-direction: column;
-        margin-bottom: 10px;
-    }
-    .date .form-group{
-        width: 45%;
-    }
+  .filterRow {
+    padding: 0px !important;
+    margin-top: 0px !important;
+    display: flex;
+    gap: "5px";
 
-    .containerBtn{
-        margin-left: 0px !important;
-    }
+  }
+
+  .addNew {
+    /* padding-top: 20px; */
+    display: none !important;
+  }
+
+  .mobileBtn {
+    display: inline-block !important;
+  }
+
+  .iconBtnBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0px;
+
+  }
+
+  .date {
+    /* padding: 10px; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: "10px";
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+
+  .date .form-group {
+    width: 45%;
+  }
+
+  .containerBtn {
+    margin-left: 0px !important;
+  }
+
+  .investmentHeader,
+  .floatingChatForm {
+    flex-direction: column;
+  }
+
+  .financeChatWidget {
+    right: 14px;
+    bottom: 180px;
+  }
+
+  .roundChatButton {
+    width: 52px;
+    height: 52px;
+  }
+
+  .floatingChatPanel {
+    height: 430px;
+  }
+
+  .planActions {
+    width: 100%;
+  }
+
+  .planActions button {
+    width: 100%;
+  }
+
+  .chatBubble {
+    max-width: 100%;
+  }
 }
+
+.investmentTicker {
+  height: 160px;
+}
+
+.tickerItem {
+  width: 280px;
+  min-height: 128px;
+}
+
+.tickerItem strong {
+  font-size: 24px;
+}
+
 
 /* Chatbot Styling - MediPulse inspired */
 .chatbotContainer {
@@ -163,6 +675,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -256,5 +769,353 @@
     bottom: 0;
     right: 0;
     border-radius: 12px 12px 0 0;
+  }
+}
+
+/* Final dashboard ticker + assistant overrides */
+.investmentTicker {
+  position: fixed !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  height: 170px !important;
+  z-index: 1040 !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 14px 0 !important;
+  background: #151b22 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.16) !important;
+}
+
+.tickerTrack {
+  display: flex !important;
+  align-items: center !important;
+  gap: 18px !important;
+  width: max-content !important;
+  animation: tickerMove 34s linear infinite !important;
+  will-change: transform;
+}
+
+.tickerTrack:hover {
+  animation-play-state: paused !important;
+}
+
+.tickerItem {
+  flex: 0 0 340px !important;
+  height: 124px !important;
+  border-radius: 8px !important;
+  padding: 16px 18px !important;
+  background: #171d24 !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  color: #ffffff !important;
+}
+
+.tickerTitle {
+  font-size: 14px !important;
+  color: #cbd5e1 !important;
+}
+
+.tickerItem strong {
+  font-size: 28px !important;
+}
+
+@keyframes tickerMove {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.financeChatWidget {
+  position: fixed !important;
+  right: 22px !important;
+  bottom: 188px !important;
+  z-index: 2147483000 !important;
+  pointer-events: none !important;
+}
+
+.roundChatButton {
+  width: 54px !important;
+  height: 54px !important;
+  border-radius: 50% !important;
+  background: #0d6efd !important;
+  color: #ffffff !important;
+  border: 0 !important;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.36) !important;
+  pointer-events: auto !important;
+  position: fixed !important;
+  right: 22px !important;
+  bottom: 188px !important;
+  z-index: 2147483002 !important;
+}
+
+.floatingChatPanel {
+  width: min(480px, calc(100vw - 28px)) !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  border-radius: 12px !important;
+  border: 2px solid #f8d84a !important;
+  overflow: hidden !important;
+  background: #0b0f14 !important;
+  box-shadow: 0 18px 52px rgba(0, 0, 0, 0.55) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  pointer-events: auto !important;
+  position: fixed !important;
+  right: 22px !important;
+  top: 82px !important;
+  bottom: 42px !important;
+  z-index: 2147483001 !important;
+}
+
+.floatingChatHeader {
+  padding: 20px 20px !important;
+  background: #111827 !important;
+  color: #ffffff !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+}
+
+.floatingChatHeader strong {
+  display: block !important;
+  font-size: 22px !important;
+}
+
+.floatingChatHeader span {
+  display: block !important;
+  margin-top: 4px !important;
+  color: #cbd5e1 !important;
+  font-size: 17px !important;
+}
+
+.chatHeaderActions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.chatHeaderActions button {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  border: 0 !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.floatingChatBody {
+  flex: 1 !important;
+  padding: 20px !important;
+  background: #0b0f14 !important;
+  overflow-y: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+}
+
+.assistantGreeting {
+  width: fit-content !important;
+  max-width: 86% !important;
+  padding: 13px 14px !important;
+  border-radius: 8px !important;
+  background: #171d24 !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  color: #f8fafc !important;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28) !important;
+  font-size: 16px !important;
+}
+
+.chatModeGrid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px !important;
+}
+
+.chatModeGrid button {
+  min-height: 44px !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  background: #171d24 !important;
+  color: #f8d84a !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.24) !important;
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease !important;
+}
+
+.chatModeGrid button:hover {
+  background: #1f2933 !important;
+  border-color: #f8d84a !important;
+  transform: translateY(-1px) !important;
+}
+
+.chatModeGrid button:last-child {
+  grid-column: span 2 !important;
+  width: fit-content !important;
+  min-width: 220px !important;
+}
+
+.floatingChatForm {
+  padding: 10px !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: #111827 !important;
+  display: grid !important;
+  grid-template-columns: 1fr 44px !important;
+  gap: 8px !important;
+}
+
+.floatingChatForm input {
+  min-height: 44px !important;
+  border-radius: 8px !important;
+  font-size: 15px !important;
+  background: #171d24 !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  color: #ffffff !important;
+}
+
+.floatingChatForm input::placeholder {
+  color: #8d98a8 !important;
+}
+
+.floatingChatForm input:disabled {
+  background: #151a21 !important;
+  color: #6f7a89 !important;
+}
+
+.floatingChatForm button {
+  width: 44px !important;
+  min-height: 44px !important;
+  border-radius: 12px !important;
+  background: #0d6efd !important;
+  border: 0 !important;
+}
+
+.chatBubble {
+  width: fit-content !important;
+  max-width: 92% !important;
+  padding: 9px 11px !important;
+  border-radius: 8px !important;
+  font-size: 15px !important;
+  line-height: 1.45 !important;
+  display: block !important;
+}
+
+.chatBubble.user {
+  align-self: flex-end !important;
+  background: #1b73ff !important;
+  color: #ffffff !important;
+}
+
+.chatBubble.bot {
+  align-self: flex-start !important;
+  background: #171d24 !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  color: #f8fafc !important;
+}
+
+.botCardScroller {
+  display: flex !important;
+  gap: 10px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  padding: 4px 2px 12px !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #f8d84a #111827 !important;
+  max-width: 100% !important;
+}
+
+.botSuggestionCard {
+  flex: 0 0 175px !important;
+  min-height: 138px !important;
+  border-radius: 8px !important;
+  background: #171d24 !important;
+  border: 1px solid rgba(248, 216, 74, 0.38) !important;
+  padding: 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  color: #f8fafc !important;
+}
+
+.botCardIcon {
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 50% !important;
+  background: rgba(248, 216, 74, 0.16) !important;
+  color: #f8d84a !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: 800 !important;
+}
+
+.botSuggestionCard strong {
+  color: #ffffff !important;
+  font-size: 14px !important;
+}
+
+.botSuggestionCard small {
+  color: #9aa4b2 !important;
+}
+
+.botSuggestionCard b {
+  margin-top: auto !important;
+  color: #f8d84a !important;
+  font-size: 16px !important;
+}
+
+@media only screen and (max-width: 600px) {
+  .investmentTicker {
+    height: 150px !important;
+  }
+
+  .tickerItem {
+    flex-basis: 260px !important;
+    height: 116px !important;
+  }
+
+  .tickerItem strong {
+    font-size: 24px !important;
+  }
+
+  .financeChatWidget {
+    right: 14px !important;
+    bottom: 166px !important;
+  }
+
+  .roundChatButton {
+    right: 14px !important;
+    bottom: 156px !important;
+  }
+
+  .floatingChatPanel {
+    min-height: 0 !important;
+    width: calc(100vw - 24px) !important;
+    height: auto !important;
+    max-height: none !important;
+    right: 12px !important;
+    top: 48px !important;
+    bottom: 22px !important;
+  }
+
+  .chatModeGrid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .chatModeGrid button:last-child {
+    grid-column: auto !important;
+    width: 100% !important;
   }
 }
