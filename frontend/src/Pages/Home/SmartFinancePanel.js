@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert, Button, Card, Col, Form, Row, Spinner as BsSpinner } from "react-bootstrap";
 import axios from "axios";
 // import { financeChatAPI, parseReceiptAPI } from "../../utils/ApiRequest";
@@ -57,7 +57,7 @@ const SmartFinancePanel = ({ transactions, onReceiptParsed }) => {
         return { currentNet, previousNet, growth };
     }, [transactions]);
 
-    const fetchInsights = async () => {
+    const fetchInsights = useCallback(async () => {
         setError("");
         setInsightsLoading(true);
         try {
@@ -71,13 +71,13 @@ const SmartFinancePanel = ({ transactions, onReceiptParsed }) => {
         } finally {
             setInsightsLoading(false);
         }
-    };
+    }, [monthlySummary.currentNet, transactions]);
 
     useEffect(() => {
         if (transactions.length) {
             fetchInsights();
         }
-    }, [transactions]);
+    }, [fetchInsights, transactions.length]);
 
     const handleReceiptUpload = async (event) => {
         const file = event.target.files?.[0];

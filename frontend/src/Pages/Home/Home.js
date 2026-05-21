@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Header from "../../components/Header";
 import { useNavigate } from "react-router-dom";
 import { Button, Modal, Form, Container } from "react-bootstrap";
@@ -24,7 +24,7 @@ import InvestmentTicker from "./InvestmentTicker";
 const Home = () => {
   const navigate = useNavigate();
 
-  const toastOptions = {
+  const toastOptions = useMemo(() => ({
     position: "bottom-right",
     autoClose: 2000,
     hideProgressBar: false,
@@ -33,7 +33,7 @@ const Home = () => {
     draggable: true,
     progress: undefined,
     theme: "dark",
-  };
+  }), []);
   const [cUser, setcUser] = useState();
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -252,7 +252,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    if (!avatar) {
+    if (!avatar || !cUser?._id) {
       return;
     }
     const fetchAllTransactions = async () => {
@@ -287,7 +287,7 @@ const Home = () => {
     };
 
     fetchAllTransactions();
-  }, [refresh, frequency, endDate, type, startDate, category]);
+  }, [avatar, cUser?._id, refresh, frequency, endDate, type, startDate, category, toastOptions]);
 
   const handleTableClick = (e) => {
     setView("table");

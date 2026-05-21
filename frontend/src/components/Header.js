@@ -18,7 +18,7 @@ const Header = () => {
         return navigate("/setAvatar");
       }
     }    
-  }, []);
+  }, [navigate]);
 
   const handleShowLogin = () => navigate("/login");
   const handleShowLogout = () => {

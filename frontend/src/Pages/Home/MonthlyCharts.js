@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Container, Row, Col, Spinner, Form } from 'react-bootstrap';
 import axios from 'axios';
@@ -26,18 +26,6 @@ ChartJS.register(
   Legend
 );
 
-// Array of colors for category graphs
-const categoryColors = [
-  'rgba(75, 192, 192, 1)',   // Teal
-  'rgba(255, 159, 64, 1)',   // Orange
-  'rgba(153, 102, 255, 1)',  // Purple
-  'rgba(255, 99, 132, 1)',   // Pink
-  'rgba(54, 162, 235, 1)',   // Blue
-  'rgba(255, 206, 86, 1)',   // Yellow
-  'rgba(231, 233, 237, 1)',  // Grey
-  'rgba(46, 204, 113, 1)'    // Green
-];
-
 const MonthlyCharts = ({ userId, frequency, startDate, endDate, type }) => {
   const [monthlyData, setMonthlyData] = useState({
     labels: [],
@@ -55,7 +43,7 @@ const MonthlyCharts = ({ userId, frequency, startDate, endDate, type }) => {
     debitData: [],
   });
 
-  const toastOptions = {
+  const toastOptions = useMemo(() => ({
     position: "bottom-right",
     autoClose: 2000,
     hideProgressBar: false,
@@ -64,7 +52,7 @@ const MonthlyCharts = ({ userId, frequency, startDate, endDate, type }) => {
     draggable: true,
     progress: undefined,
     theme: "dark",
-  };
+  }), []);
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -105,7 +93,7 @@ const MonthlyCharts = ({ userId, frequency, startDate, endDate, type }) => {
     };
 
     fetchTransactions();
-  }, [userId, frequency, startDate, endDate, type]);
+  }, [userId, frequency, startDate, endDate, type, toastOptions]);
 
   // Process data when selected category changes
   useEffect(() => {
