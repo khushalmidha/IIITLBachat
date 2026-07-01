@@ -37,6 +37,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
+    transactions: {
+        type: [],
+        default: [],
+    },
     createdAt: {
         type:Date,
         default: Date.now,

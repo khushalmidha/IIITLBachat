@@ -1,5 +1,4 @@
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import { OAuth2Client } from "google-auth-library";
 import User from "../models/UserSchema.js";
 
@@ -9,14 +8,6 @@ const publicUser = (user) => {
   const plainUser = user.toObject ? user.toObject() : { ...user };
   delete plainUser.password;
   return plainUser;
-};
-
-const signToken = (userId) => {
-  if (!process.env.JWT_SECRET) {
-    throw new Error("JWT_SECRET is not configured");
-  }
-
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
 export const registerControllers = async (req, res) => {
@@ -51,7 +42,6 @@ export const registerControllers = async (req, res) => {
       success: true,
       message: "User created successfully",
       user: publicUser(newUser),
-      token: signToken(newUser._id),
     });
   } catch (err) {
     return res.status(500).json({
@@ -98,7 +88,6 @@ export const loginControllers = async (req, res) => {
       success: true,
       message: `Welcome back, ${user.name}`,
       user: publicUser(user),
-      token: signToken(user._id),
     });
   } catch (err) {
     return res.status(500).json({
@@ -119,15 +108,8 @@ export const setAvatarController = async (req, res) => {
       });
     }
 
-    if (req.params.id !== req.userId) {
-      return res.status(403).json({
-        success: false,
-        message: "You cannot update another user's avatar",
-      });
-    }
-
     const userData = await User.findByIdAndUpdate(
-      req.userId,
+      req.params.id,
       {
         isAvatarImageSet: true,
         avatarImage: imageData,
@@ -212,7 +194,6 @@ export const googleAuthController = async (req, res) => {
       success: true,
       message: `Welcome, ${user.name}`,
       user: publicUser(user),
-      token: signToken(user._id),
     });
   } catch (err) {
     const status = err.message?.includes("Token used too late") ? 401 : 500;

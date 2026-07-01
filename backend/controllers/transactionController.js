@@ -1,5 +1,6 @@
 import moment from "moment";
 import Transaction from "../models/TransactionModel.js";
+import User from "../models/UserSchema.js";
 
 const transactionFields = [
   "title",
@@ -13,6 +14,7 @@ const transactionFields = [
 export const addTransactionController = async (req, res) => {
   try {
     const {
+      userId,
       title,
       amount,
       description,
@@ -27,7 +29,8 @@ export const addTransactionController = async (req, res) => {
       !description ||
       !date ||
       !category ||
-      !transactionType
+      !transactionType ||
+      !userId
     ) {
       return res.status(400).json({
         success: false,
@@ -41,9 +44,15 @@ export const addTransactionController = async (req, res) => {
       category,
       description,
       date,
-      user: req.userId,
+      user: userId,
       transactionType: String(transactionType).toLowerCase(),
     });
+
+    const user = await User.findById(userId);
+    if (user) {
+      user.transactions.push(newTransaction);
+      await user.save();
+    }
 
     return res.status(201).json({
       success: true,
@@ -61,6 +70,7 @@ export const addTransactionController = async (req, res) => {
 export const getAllTransactionController = async (req, res) => {
   try {
     const {
+      userId,
       type = "all",
       frequency = "custom",
       startDate,
@@ -75,7 +85,14 @@ export const getAllTransactionController = async (req, res) => {
       1000,
       Math.max(1, Number.parseInt(limit, 10) || 100)
     );
-    const query = { user: req.userId };
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User is required",
+      });
+    }
+
+    const query = { user: userId };
 
     if (type !== "all") {
       query.transactionType = String(type).toLowerCase();
@@ -124,9 +141,12 @@ export const getAllTransactionController = async (req, res) => {
 
 export const deleteTransactionController = async (req, res) => {
   try {
+    const { userId } = req.body;
+    const transactionId = req.params.id;
+
     const transaction = await Transaction.findOneAndDelete({
-      _id: req.params.id,
-      user: req.userId,
+      _id: transactionId,
+      user: userId,
     });
 
     if (!transaction) {
@@ -134,6 +154,15 @@ export const deleteTransactionController = async (req, res) => {
         success: false,
         message: "Transaction not found",
       });
+    }
+
+    const user = await User.findById(userId);
+    if (user) {
+      const transactionArr = user.transactions.filter(
+        (transaction) => transaction._id.toString() !== transactionId
+      );
+      user.transactions = transactionArr;
+      await user.save();
     }
 
     return res.status(200).json({
@@ -161,7 +190,7 @@ export const updateTransactionController = async (req, res) => {
     }, {});
 
     const transaction = await Transaction.findOneAndUpdate(
-      { _id: req.params.id, user: req.userId },
+      { _id: req.params.id, user: req.body.userId },
       updates,
       { new: true, runValidators: true }
     );

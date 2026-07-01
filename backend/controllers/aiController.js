@@ -1,5 +1,3 @@
-import Transaction from "../models/TransactionModel.js";
-
 const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 const YAHOO_CACHE_TTL_MS = 5 * 60 * 1000;
@@ -189,9 +187,6 @@ const summarizeTransactions = (transactions = []) => {
   };
 };
 
-const getUserTransactions = (userId) =>
-  Transaction.find({ user: userId }).sort({ date: -1 }).lean();
-
 export const financeChatController = async (req, res) => {
   try {
     const { question, mode = "data" } = req.body;
@@ -224,7 +219,7 @@ Keep every answer short and practical:
 Match the user's language. If the user asks in Hinglish/Hindi, reply in natural Hinglish/Hindi.
 `;
 
-    const transactions = await getUserTransactions(req.userId);
+    const { transactions = [] } = req.body;
     const summary = summarizeTransactions(transactions);
     const text = await callGemini([
       {
@@ -293,7 +288,7 @@ const clampReturn = (value, fallback) => {
 
 export const investmentPlanController = async (req, res) => {
   try {
-    const transactions = await getUserTransactions(req.userId);
+    const { transactions = [] } = req.body;
     const summary = summarizeTransactions(transactions);
     const monthlySurplus = Math.max(0, Math.round(summary.netProfit));
 
@@ -468,7 +463,7 @@ export const marketTickerController = async (req, res) => {
 };
 export const investmentInsightsController = async (req, res) => {
   try {
-    const transactions = await getUserTransactions(req.userId);
+    const { transactions = [] } = req.body;
     const summary = summarizeTransactions(transactions);
     const investable = Math.max(0, summary.netProfit);
 
