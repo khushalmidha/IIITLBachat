@@ -12,7 +12,7 @@ const transactionSchema = new mongoose.Schema({
     amount: {
         type: Number,
         required: [true, "Amount is required"],
-        default: 0,
+        min: [0.01, "Amount must be greater than zero"],
     },
 
     category: {
@@ -29,7 +29,7 @@ const transactionSchema = new mongoose.Schema({
     transactionType: {
         type: String,
         required: [true, "Transaction Type is required"],
-        
+        enum: ["credit", "expense"],
     },
 
     date: {
@@ -40,14 +40,17 @@ const transactionSchema = new mongoose.Schema({
     user:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
+        required: true,
     },
 
     createdAt: {
         type: Date,
-        default: new Date(),
+        default: Date.now,
     }
 
 });
+
+transactionSchema.index({ user: 1, date: -1 });
 
 const Transaction = mongoose.model('Transaction', transactionSchema);
 

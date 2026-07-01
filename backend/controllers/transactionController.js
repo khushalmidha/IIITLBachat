@@ -1,6 +1,14 @@
-import Transaction from "../models/TransactionModel.js";
-import User from "../models/UserSchema.js";
 import moment from "moment";
+import Transaction from "../models/TransactionModel.js";
+
+const transactionFields = [
+  "title",
+  "amount",
+  "description",
+  "date",
+  "category",
+  "transactionType",
+];
 
 export const addTransactionController = async (req, res) => {
   try {
@@ -10,11 +18,8 @@ export const addTransactionController = async (req, res) => {
       description,
       date,
       category,
-      userId,
       transactionType,
     } = req.body;
-
-    // console.log(title, amount, description, date, category, userId, transactionType);
 
     if (
       !title ||
@@ -24,206 +29,159 @@ export const addTransactionController = async (req, res) => {
       !category ||
       !transactionType
     ) {
-      return res.status(408).json({
-        success: false,
-        messages: "Please Fill all fields",
-      });
-    }
-
-    const user = await User.findById(userId);
-
-    if (!user) {
       return res.status(400).json({
         success: false,
-        message: "User not found",
+        message: "Please fill all fields",
       });
     }
 
-    let newTransaction = await Transaction.create({
-      title: title,
-      amount: amount,
-      category: category,
-      description: description,
-      date: date,
-      user: userId,
-      transactionType: transactionType,
+    const newTransaction = await Transaction.create({
+      title,
+      amount,
+      category,
+      description,
+      date,
+      user: req.userId,
+      transactionType: String(transactionType).toLowerCase(),
     });
 
-    user.transactions.push(newTransaction);
-
-    user.save();
-
-    return res.status(200).json({
+    return res.status(201).json({
       success: true,
-      message: "Transaction Added Successfully",
+      message: "Transaction added successfully",
+      transaction: newTransaction,
     });
   } catch (err) {
-    return res.status(401).json({
+    return res.status(400).json({
       success: false,
-      messages: err.message,
+      message: err.message,
     });
   }
 };
 
 export const getAllTransactionController = async (req, res) => {
   try {
-    const { userId, type, frequency, startDate, endDate, category } = req.body;
+    const {
+      type = "all",
+      frequency = "custom",
+      startDate,
+      endDate,
+      category,
+      page = 1,
+      limit = 100,
+    } = req.body;
 
-    console.log(userId, type, frequency, startDate, endDate);
+    const parsedPage = Math.max(1, Number.parseInt(page, 10) || 1);
+    const parsedLimit = Math.min(
+      1000,
+      Math.max(1, Number.parseInt(limit, 10) || 100)
+    );
+    const query = { user: req.userId };
 
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(400).json({
-        success: false,
-        message: "User not found",
-      });
+    if (type !== "all") {
+      query.transactionType = String(type).toLowerCase();
     }
 
-    // Create a query object with the user and type conditions
-    const query = {
-      user: userId,
-    };
+    if (category) {
+      query.category = String(category);
+    }
 
-    if (type !== 'all') {
-      query.transactionType = type;
-    }
-    if(category && category!==""){
-      query.category = category
-    }
-    // Add date conditions based on 'frequency' and 'custom' range
-    if (frequency !== 'custom') {
-      query.date = {
-        $gt: moment().subtract(Number(frequency), "days").toDate()
-      }; 
+    if (frequency !== "custom") {
+      const days = Number(frequency);
+      if (Number.isFinite(days) && days > 0) {
+        query.date = {
+          $gt: moment().subtract(days, "days").toDate(),
+        };
+      }
     } else if (startDate && endDate) {
       query.date = {
-        $gte: moment(startDate).toDate(),
-        $lte: moment(endDate).toDate(),
+        $gte: moment(startDate).startOf("day").toDate(),
+        $lte: moment(endDate).endOf("day").toDate(),
       };
     }
 
-    // console.log(query);
-
-    const transactions = await Transaction.find(query);
-
-    // console.log(transactions);
+    const [transactions, total] = await Promise.all([
+      Transaction.find(query)
+        .sort({ date: -1, createdAt: -1 })
+        .skip((parsedPage - 1) * parsedLimit)
+        .limit(parsedLimit),
+      Transaction.countDocuments(query),
+    ]);
 
     return res.status(200).json({
       success: true,
-      transactions: transactions,
+      transactions,
+      total,
+      page: parsedPage,
+      limit: parsedLimit,
     });
   } catch (err) {
-    return res.status(401).json({
+    return res.status(400).json({
       success: false,
-      messages: err.message,
+      message: err.message,
     });
   }
 };
 
-
 export const deleteTransactionController = async (req, res) => {
   try {
-    const transactionId = req.params.id;
-    const userId = req.body.userId;
+    const transaction = await Transaction.findOneAndDelete({
+      _id: req.params.id,
+      user: req.userId,
+    });
 
-    // console.log(transactionId, userId);
-
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(400).json({
+    if (!transaction) {
+      return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: "Transaction not found",
       });
     }
-    const transactionElement = await Transaction.findByIdAndDelete(
-      transactionId
-    );
-
-    if (!transactionElement) {
-      return res.status(400).json({
-        success: false,
-        message: "transaction not found",
-      });
-    }
-
-    const transactionArr = user.transactions.filter(
-      (transaction) => transaction._id === transactionId
-    );
-
-    user.transactions = transactionArr;
-
-    user.save();
-
-    // await transactionElement.remove();
 
     return res.status(200).json({
       success: true,
-      message: `Transaction successfully deleted`,
+      message: "Transaction successfully deleted",
     });
   } catch (err) {
-    return res.status(401).json({
+    return res.status(400).json({
       success: false,
-      messages: err.message,
+      message: err.message,
     });
   }
 };
 
 export const updateTransactionController = async (req, res) => {
   try {
-    const transactionId = req.params.id;
+    const updates = transactionFields.reduce((result, field) => {
+      if (req.body[field] !== undefined && req.body[field] !== "") {
+        result[field] =
+          field === "transactionType"
+            ? String(req.body[field]).toLowerCase()
+            : req.body[field];
+      }
+      return result;
+    }, {});
 
-    const { title, amount, description, date, category, transactionType } =
-      req.body;
+    const transaction = await Transaction.findOneAndUpdate(
+      { _id: req.params.id, user: req.userId },
+      updates,
+      { new: true, runValidators: true }
+    );
 
-    console.log(title, amount, description, date, category, transactionType);
-
-    const transactionElement = await Transaction.findById(transactionId);
-
-    if (!transactionElement) {
-      return res.status(400).json({
+    if (!transaction) {
+      return res.status(404).json({
         success: false,
-        message: "transaction not found",
+        message: "Transaction not found",
       });
     }
 
-    if (title) {
-      transactionElement.title = title;
-    }
-
-    if (description) {
-      transactionElement.description = description;
-    }
-
-    if (amount) {
-      transactionElement.amount = amount;
-    }
-
-    if (category) {
-      transactionElement.category = category;
-    }
-    if (transactionType) {
-      transactionElement.transactionType = transactionType;
-    }
-
-    if (date) {
-      transactionElement.date = date;
-    }
-
-    await transactionElement.save();
-
-    // await transactionElement.remove();
-
     return res.status(200).json({
       success: true,
-      message: `Transaction Updated Successfully`,
-      transaction: transactionElement,
+      message: "Transaction updated successfully",
+      transaction,
     });
   } catch (err) {
-    return res.status(401).json({
+    return res.status(400).json({
       success: false,
-      messages: err.message,
+      message: err.message,
     });
   }
 };

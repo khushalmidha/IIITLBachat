@@ -6,8 +6,11 @@ import {
   marketTickerController,
   parseReceiptController,
 } from "../controllers/aiController.js";
+import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
+
+router.use(protect);
 
 router.route("/receipt").post(parseReceiptController);
 router.route("/chat").post(financeChatController);

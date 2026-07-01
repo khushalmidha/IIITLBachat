@@ -1,5 +1,9 @@
+import Transaction from "../models/TransactionModel.js";
+
 const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+const YAHOO_CACHE_TTL_MS = 5 * 60 * 1000;
+const yahooCache = new Map();
 
 const safeNumber = (value) => {
   if (typeof value === "number") return value;
@@ -185,9 +189,12 @@ const summarizeTransactions = (transactions = []) => {
   };
 };
 
+const getUserTransactions = (userId) =>
+  Transaction.find({ user: userId }).sort({ date: -1 }).lean();
+
 export const financeChatController = async (req, res) => {
   try {
-    const { question, transactions = [], mode = "data" } = req.body;
+    const { question, mode = "data" } = req.body;
     if (!question) {
       return res.status(400).json({ success: false, message: "Question is required" });
     }
@@ -217,6 +224,7 @@ Keep every answer short and practical:
 Match the user's language. If the user asks in Hinglish/Hindi, reply in natural Hinglish/Hindi.
 `;
 
+    const transactions = await getUserTransactions(req.userId);
     const summary = summarizeTransactions(transactions);
     const text = await callGemini([
       {
@@ -235,10 +243,36 @@ Match the user's language. If the user asks in Hinglish/Hindi, reply in natural 
   }
 };
 
+const fetchYahooChart = async (symbol, range, interval) => {
+  const cacheKey = `${symbol}:${range}:${interval}`;
+  const cached = yahooCache.get(cacheKey);
+  const now = Date.now();
+
+  if (cached && now - cached.cachedAt < YAHOO_CACHE_TTL_MS) {
+    return cached.data;
+  }
+
+  try {
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=${range}&interval=${interval}`;
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (!response.ok || data.chart?.error) {
+      throw new Error(data.chart?.error?.description || "Yahoo Finance request failed");
+    }
+
+    yahooCache.set(cacheKey, { data, cachedAt: now });
+    return data;
+  } catch (err) {
+    if (cached) {
+      return cached.data;
+    }
+    throw err;
+  }
+};
+
 const fetchYahooGrowth = async (symbol) => {
-  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=1y&interval=1d`;
-  const response = await fetch(url);
-  const data = await response.json();
+  const data = await fetchYahooChart(symbol, "1y", "1d");
   const prices = data.chart?.result?.[0]?.indicators?.quote?.[0]?.close?.filter(Boolean) || [];
   const first = prices[0];
   const last = prices[prices.length - 1];
@@ -259,7 +293,7 @@ const clampReturn = (value, fallback) => {
 
 export const investmentPlanController = async (req, res) => {
   try {
-    const { transactions = [] } = req.body;
+    const transactions = await getUserTransactions(req.userId);
     const summary = summarizeTransactions(transactions);
     const monthlySurplus = Math.max(0, Math.round(summary.netProfit));
 
@@ -355,9 +389,7 @@ export const investmentPlanController = async (req, res) => {
 };
 
 const fetchYahooDailyMove = async (symbol) => {
-  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=5d&interval=1d`;
-  const response = await fetch(url);
-  const data = await response.json();
+  const data = await fetchYahooChart(symbol, "5d", "1d");
   const result = data.chart?.result?.[0];
   const prices = result?.indicators?.quote?.[0]?.close?.filter(Boolean) || [];
   const meta = result?.meta || {};
@@ -436,9 +468,9 @@ export const marketTickerController = async (req, res) => {
 };
 export const investmentInsightsController = async (req, res) => {
   try {
-    const { transactions = [], monthlyInvestment } = req.body;
+    const transactions = await getUserTransactions(req.userId);
     const summary = summarizeTransactions(transactions);
-    const investable = Math.max(0, safeNumber(monthlyInvestment || summary.netProfit));
+    const investable = Math.max(0, summary.netProfit);
 
     const [niftyGrowth, bitcoinGrowth, goldGrowth] = await Promise.allSettled([
       fetchYahooGrowth("^NSEI"),
