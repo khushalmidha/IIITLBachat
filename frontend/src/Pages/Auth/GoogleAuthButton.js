@@ -5,13 +5,20 @@ import { googleAuthAPI } from "../../utils/ApiRequest";
 const GoogleAuthButton = ({ onSuccess, onError }) => {
   const buttonRef = useRef(null);
   const [ready, setReady] = useState(false);
+  const [loadError, setLoadError] = useState("");
   const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
   useEffect(() => {
     if (!clientId) return;
 
     const setupGoogle = () => {
-      if (!window.google || !buttonRef.current) return;
+      if (!buttonRef.current) return;
+      if (!window.google) {
+        setLoadError("Google sign in script did not load. Check your network/ad blocker.");
+        return;
+      }
+
+      buttonRef.current.innerHTML = "";
       window.google.accounts.id.initialize({
         client_id: clientId,
         callback: async ({ credential }) => {
@@ -33,6 +40,7 @@ const GoogleAuthButton = ({ onSuccess, onError }) => {
         width: 280,
         text: "continue_with",
       });
+      setLoadError("");
       setReady(true);
     };
 
@@ -42,6 +50,9 @@ const GoogleAuthButton = ({ onSuccess, onError }) => {
       script.async = true;
       script.defer = true;
       script.onload = setupGoogle;
+      script.onerror = () => {
+        setLoadError("Google sign in script failed to load. Check your network/ad blocker.");
+      };
       document.body.appendChild(script);
     } else {
       setupGoogle();
@@ -51,7 +62,7 @@ const GoogleAuthButton = ({ onSuccess, onError }) => {
   if (!clientId) {
     return (
       <p className="mt-3 text-center" style={{ color: "#cfcfcf", fontSize: 14 }}>
-        Add REACT_APP_GOOGLE_CLIENT_ID to enable Google sign in.
+        Google sign in is not configured. Add REACT_APP_GOOGLE_CLIENT_ID in frontend/.env.
       </p>
     );
   }
@@ -59,7 +70,12 @@ const GoogleAuthButton = ({ onSuccess, onError }) => {
   return (
     <div className="googleAuthWrap mt-3">
       <div ref={buttonRef} />
-      {!ready && <span className="text-white">Loading Google sign in...</span>}
+      {!ready && !loadError && <span className="text-white">Loading Google sign in...</span>}
+      {loadError && (
+        <p className="mt-2 text-center" style={{ color: "#cfcfcf", fontSize: 14 }}>
+          {loadError}
+        </p>
+      )}
     </div>
   );
 };

@@ -1,12 +1,18 @@
-import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
+import { dirname, resolve } from "path";
+import { fileURLToPath } from "url";
 import { connectDB } from "./DB/Database.js";
 import helmet from "helmet";
 import morgan from "morgan";
 import transactionRoutes from "./Routers/Transactions.js";
 import userRoutes from "./Routers/userRouter.js";
 import aiRoutes from "./Routers/aiRouter.js";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: resolve(__dirname, ".env") });
+dotenv.config();
 
 const app = express();
 
