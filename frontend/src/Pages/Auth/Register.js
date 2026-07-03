@@ -18,8 +18,10 @@ const Register = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if(localStorage.getItem('user')){
-      navigate('/');
+    const savedUser = localStorage.getItem("user");
+    if(savedUser){
+      const user = JSON.parse(savedUser);
+      navigate(user.isAvatarImageSet && user.avatarImage ? "/" : "/setAvatar");
     }
   }, [navigate]);
 
@@ -56,7 +58,7 @@ const Register = () => {
    const handleGoogleSuccess = useCallback((data) => {
     localStorage.setItem("user", JSON.stringify(data.user));
     toast.success(data.message, toastOptions);
-    navigate("/");
+    navigate(data.user?.isAvatarImageSet && data.user?.avatarImage ? "/" : "/setAvatar");
   }, [navigate, toastOptions]);
 
   const handleGoogleError = useCallback((message) => {
@@ -81,7 +83,7 @@ const Register = () => {
         localStorage.setItem("user", JSON.stringify(data.user));
         toast.success(data.message, toastOptions);
         setLoading(true);
-        navigate("/");
+        navigate(data.user?.isAvatarImageSet && data.user?.avatarImage ? "/" : "/setAvatar");
       }
       else{
         toast.error(data.message, toastOptions);
@@ -186,8 +188,6 @@ const Register = () => {
               <Form.Control type="password"  name="password" placeholder="Password" value={values.password} onChange={handleChange} />
             </Form.Group>
             <div style={{width: "100%", display: "flex" , alignItems:"center", justifyContent:"center", flexDirection: "column"}} className="mt-4">
-              <Link to="/forgotPassword" className="text-white lnk" >Forgot Password?</Link>
-
               <Button
                   type="submit"
                   className=" text-center mt-3 btnStyle"
@@ -196,6 +196,9 @@ const Register = () => {
                 >
                   {loading ? "Registering..." : "Signup"}
                 </Button>
+                <p className="mt-3 mb-0 text-center" style={{ color: "#cfcfcf", fontSize: 14 }}>
+                  After signup, you will select an avatar to finish your profile.
+                </p>
                <GoogleAuthButton
                 onSuccess={handleGoogleSuccess}
                 onError={handleGoogleError}

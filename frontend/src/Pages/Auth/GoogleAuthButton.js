@@ -6,10 +6,18 @@ const GoogleAuthButton = ({ onSuccess, onError }) => {
   const buttonRef = useRef(null);
   const [ready, setReady] = useState(false);
   const [loadError, setLoadError] = useState("");
+  const [signedInUser, setSignedInUser] = useState(null);
   const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
   useEffect(() => {
-    if (!clientId) return;
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      setSignedInUser(JSON.parse(savedUser));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!clientId || signedInUser) return;
 
     const setupGoogle = () => {
       if (!buttonRef.current) return;
@@ -57,7 +65,15 @@ const GoogleAuthButton = ({ onSuccess, onError }) => {
     } else {
       setupGoogle();
     }
-  }, [clientId, onError, onSuccess]);
+  }, [clientId, onError, onSuccess, signedInUser]);
+
+  if (signedInUser) {
+    return (
+      <p className="mt-3 text-center" style={{ color: "#cfcfcf", fontSize: 14 }}>
+        Already signed in as {signedInUser.name || signedInUser.email}.
+      </p>
+    );
+  }
 
   if (!clientId) {
     return (

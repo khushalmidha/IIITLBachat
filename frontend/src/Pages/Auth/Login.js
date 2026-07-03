@@ -16,8 +16,10 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (localStorage.getItem("user")) {
-      navigate("/");
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      const user = JSON.parse(savedUser);
+      navigate(user.isAvatarImageSet && user.avatarImage ? "/" : "/setAvatar");
     }
   }, [navigate]);
 
@@ -44,7 +46,7 @@ const Login = () => {
   const handleGoogleSuccess = useCallback((data) => {
     localStorage.setItem("user", JSON.stringify(data.user));
     toast.success(data.message, toastOptions);
-    navigate("/");
+    navigate(data.user?.isAvatarImageSet && data.user?.avatarImage ? "/" : "/setAvatar");
   }, [navigate, toastOptions]);
 
   const handleGoogleError = useCallback((message) => {
@@ -67,7 +69,7 @@ const Login = () => {
     const data = res.data
     if (data.success === true) {
       localStorage.setItem("user", JSON.stringify(data.user));
-      navigate("/");
+      navigate(data.user?.isAvatarImageSet && data.user?.avatarImage ? "/" : "/setAvatar");
       toast.success(data.message, toastOptions);
       setLoading(false);
     } else {
@@ -203,10 +205,6 @@ const Login = () => {
                 }}
                 className="mt-4"
               >
-                <Link to="/forgotPassword" className="text-white lnk">
-                  Forgot Password?
-                </Link>
-
                 <Button
                   type="submit"
                   className=" text-center mt-3 btnStyle"
@@ -215,6 +213,9 @@ const Login = () => {
                 >
                   {loading ? "Signin…" : "Login"}
                 </Button>
+                <p className="mt-3 mb-0 text-center" style={{ color: "#cfcfcf", fontSize: 14 }}>
+                  New here? Please sign up first, then choose your avatar.
+                </p>
               <GoogleAuthButton
                   onSuccess={handleGoogleSuccess}
                   onError={handleGoogleError}
