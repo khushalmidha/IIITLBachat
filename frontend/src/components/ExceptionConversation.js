@@ -11,6 +11,8 @@ const ExceptionConversation = ({ exception, userId, onClose, onAcknowledge }) =>
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
   const [messages, setMessages] = useState(exception?.messages || []);
+  const messagesEndRef = React.useRef(null);
+  const isAcknowledged = exception?.acknowledged || false;
 
   useEffect(() => {
     setMessages(exception?.messages || []);
@@ -126,8 +128,7 @@ const ExceptionConversation = ({ exception, userId, onClose, onAcknowledge }) =>
                   })}
                 </div>
               </div>
-              );
-            })
+            ))
           )}
           <div ref={messagesEndRef} />
         </div>
