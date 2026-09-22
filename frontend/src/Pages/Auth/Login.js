@@ -89,11 +89,9 @@ const Login = () => {
       >
         <Row>
           <Col md={{ span: 6, offset: 3 }}>
-            <h1 className="text-center mt-5">
-              <AccountBalanceWalletIcon
-                sx={{ fontSize: 40, color: "#6C47FF" }}
-                className="text-center"
-              />
+            <h1 className="text-center mt-5" style={{ fontSize: '32px', fontWeight: 800, letterSpacing: '-0.5px', marginBottom: '16px' }}>
+              <span style={{ color: '#111827' }}>IIITL</span>{' '}
+              <span style={{ color: '#6C47FF' }}>Bachat</span>
             </h1>
             <h2 className="text-center" style={{ color: "#111827" }}>Login</h2>
             <Form>

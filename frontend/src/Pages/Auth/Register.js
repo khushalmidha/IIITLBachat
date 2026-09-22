@@ -90,8 +90,9 @@ const Register = () => {
 
       <Container className="mt-5" style={{position: 'relative', zIndex: "2 !important" }}>
       <Row>
-        <h1 className="text-center">
-          <AccountBalanceWalletIcon sx={{ fontSize: 40, color: "#6C47FF"}}  className="text-center" />
+        <h1 className="text-center mt-5" style={{ fontSize: '32px', fontWeight: 800, letterSpacing: '-0.5px', marginBottom: '16px' }}>
+          <span style={{ color: '#111827' }}>IIITL</span>{' '}
+          <span style={{ color: '#6C47FF' }}>Bachat</span>
         </h1>
         <h1 className="text-center" style={{ color: "#111827", fontWeight: 800 }}>Welcome to Expense Management System</h1>
         <Col md={{ span: 6, offset: 3 }}>
