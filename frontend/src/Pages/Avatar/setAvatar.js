@@ -159,7 +159,7 @@ const SetAvatar = () => {
           options={{
             background: {
               color: {
-                value: "#000",
+                value: "#f4f6f8",
               },
             },
             fpsLimit: 60,
@@ -172,7 +172,7 @@ const SetAvatar = () => {
                 },
               },
               color: {
-                value: "#ffcc00",
+                value: "#6C47FF",
               },
               shape: {
                 type: "circle",
@@ -239,7 +239,7 @@ const SetAvatar = () => {
               style={{ position: "relative", zIndex: "2 !important" }}
             >
               <div className="avatarBox">
-                <h1 className="text-center text-white mt-5">
+                <h1 className="text-center mt-5" style={{ color: "#111827", fontWeight: 800 }}>
                   Choose Your Avatar
                 </h1>
                 {/* <div className="imgBox">

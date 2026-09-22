@@ -54,28 +54,28 @@ const ExceptionConversation = ({ exception, userId, onClose, onAcknowledge }) =>
 
   return (
     <Modal show onHide={onClose} centered>
-      <Modal.Header closeButton style={{ background: "#111827", borderBottom: "1px solid rgba(255,59,48,0.2)" }}>
-        <Modal.Title style={{ color: "#fff", fontSize: 16 }}>🚩 Budget Exception</Modal.Title>
+      <Modal.Header closeButton style={{ background: "#ffffff", borderBottom: "1px solid #e2e8f0" }}>
+        <Modal.Title style={{ color: "#111827", fontSize: 16 }}>🚩 Budget Exception</Modal.Title>
       </Modal.Header>
-      <Modal.Body style={{ background: "#0d0f17" }}>
+      <Modal.Body style={{ background: "#f8fafc" }}>
         {/* Transaction Info */}
         <div
           style={{
             padding: 14,
             borderRadius: 10,
-            background: "rgba(255,59,48,0.06)",
-            border: "1px solid rgba(255,59,48,0.2)",
+            background: "#fee2e2",
+            border: "1px solid #fecaca",
             marginBottom: 16,
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-            <strong style={{ color: "#fff" }}>{txn?.title || "Transaction"}</strong>
+            <strong style={{ color: "#111827" }}>{txn?.title || "Transaction"}</strong>
             <Badge bg="danger">{formatCurrency(txn?.amount)}</Badge>
           </div>
-          <div style={{ fontSize: 13, color: "#94a3b8" }}>
+          <div style={{ fontSize: 13, color: "#475569" }}>
             Category: {exception.category || txn?.category || "—"}
           </div>
-          <div style={{ fontSize: 13, color: "#FF6B6B", fontWeight: 600, marginTop: 4 }}>
+          <div style={{ fontSize: 13, color: "#dc2626", fontWeight: 600, marginTop: 4 }}>
             Over budget by {formatCurrency(exception.overAmount)}
           </div>
         </div>
@@ -93,7 +93,7 @@ const ExceptionConversation = ({ exception, userId, onClose, onAcknowledge }) =>
           }}
         >
           {messages.length === 0 ? (
-            <p style={{ color: "#94a3b8", fontSize: 13, textAlign: "center", padding: 16 }}>
+            <p style={{ color: "#64748b", fontSize: 13, textAlign: "center", padding: 16 }}>
               No messages yet. Add context about this expense.
             </p>
           ) : (
@@ -103,13 +103,17 @@ const ExceptionConversation = ({ exception, userId, onClose, onAcknowledge }) =>
                 style={{
                   alignSelf: msg.sender === userId ? "flex-end" : "flex-start",
                   maxWidth: "80%",
-                  padding: "8px 14px",
-                  borderRadius: 12,
+                  padding: "10px 14px",
+                  borderRadius: 16,
+                  borderTopLeftRadius: msg.sender === userId ? 16 : 4,
+                  borderTopRightRadius: msg.sender === userId ? 4 : 16,
                   background: msg.sender === userId
-                    ? "rgba(108,71,255,0.2)"
-                    : "rgba(255,255,255,0.06)",
-                  color: "#e2e8f0",
+                    ? "linear-gradient(135deg, #6C47FF, #8B6BFF)"
+                    : "#ffffff",
+                  border: msg.sender === userId ? "none" : "1px solid #e2e8f0",
+                  color: msg.sender === userId ? "#ffffff" : "#1e293b",
                   fontSize: 13,
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.05)"
                 }}
               >
                 <div>{msg.text}</div>
@@ -122,47 +126,57 @@ const ExceptionConversation = ({ exception, userId, onClose, onAcknowledge }) =>
                   })}
                 </div>
               </div>
-            ))
+              );
+            })
           )}
+          <div ref={messagesEndRef} />
         </div>
 
-        {/* Message Input */}
-        {!exception.acknowledged && (
-          <div style={{ display: "flex", gap: 8 }}>
+        {/* Input Area */}
+        {!isAcknowledged && (
+          <div style={{ padding: 16, background: "#ffffff", borderTop: "1px solid #e2e8f0", display: "flex", gap: 12, alignItems: "center" }}>
             <Form.Control
-              size="sm"
-              placeholder='e.g., "Emergency medical expense"'
+              type="text"
+              placeholder="Type your message..."
               value={text}
               onChange={(e) => setText(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              style={{
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                color: "#e2e8f0",
+              onKeyPress={(e) => e.key === "Enter" && handleSend()}
+              style={{ 
+                background: "#f8fafc", 
+                border: "1px solid #e2e8f0", 
+                color: "#111827",
+                borderRadius: 20
               }}
             />
             <Button
-              size="sm"
               onClick={handleSend}
               disabled={sending || !text.trim()}
-              style={{ background: "linear-gradient(135deg, #6C47FF, #8B6BFF)", border: "none" }}
+              style={{ 
+                background: "linear-gradient(135deg, #6C47FF, #8B6BFF)", 
+                border: "none",
+                borderRadius: 20,
+                padding: "8px 20px"
+              }}
             >
               Send
             </Button>
           </div>
         )}
       </Modal.Body>
-      <Modal.Footer style={{ background: "#111827", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-        {exception.acknowledged ? (
-          <Badge bg="success">✓ Acknowledged</Badge>
-        ) : (
-          <Button size="sm" variant="outline-success" onClick={handleAcknowledge}>
-            ✓ Acknowledge
+      <Modal.Footer style={{ background: "#ffffff", borderTop: "1px solid #e2e8f0", justifyContent: "space-between" }}>
+        <div style={{ color: "#64748b", fontSize: 13 }}>
+          {isAcknowledged ? "✅ Exception Acknowledged" : "⚠️ Needs Acknowledgement"}
+        </div>
+        <div>
+          <Button variant="secondary" onClick={onClose} style={{ marginRight: 10 }}>
+            Close
           </Button>
-        )}
-        <Button size="sm" variant="outline-light" onClick={onClose}>
-          Close
-        </Button>
+          {!isAcknowledged && (
+            <Button variant="success" onClick={handleAcknowledge}>
+              Acknowledge Override
+            </Button>
+          )}
+        </div>
       </Modal.Footer>
     </Modal>
   );

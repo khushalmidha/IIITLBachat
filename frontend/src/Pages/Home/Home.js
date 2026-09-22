@@ -405,9 +405,9 @@ const Home = () => {
           >
             <div className="filterRow">
               {view !== "line" && view !== "smart" && view !== "budget" && (
-                <div className="text-white">
+                <div>
                   <Form.Group className="mb-3" controlId="formSelectFrequency">
-                    <Form.Label>Select Frequency</Form.Label>
+                    <Form.Label style={{ color: '#475569', fontWeight: 600 }}>Select Frequency</Form.Label>
                     <Form.Select
                       name="frequency"
                       value={frequency}
@@ -423,9 +423,9 @@ const Home = () => {
               )}
 
               {view !== "line" && view !== "smart" && view !== "budget" && (
-                <div className="text-white type">
+                <div className="type">
                   <Form.Group className="mb-3" controlId="formSelectFrequency">
-                    <Form.Label>Type</Form.Label>
+                    <Form.Label style={{ color: '#475569', fontWeight: 600 }}>Type</Form.Label>
                     <Form.Select
                       name="type"
                       value={type}
@@ -440,9 +440,9 @@ const Home = () => {
               )}
 
               {view !== "line" && view !== "smart" && view !== "budget" && (
-                <div className="text-white type">
+                <div className="type">
                   <Form.Group className="mb-3" controlId="formSelectCategory">
-                    <Form.Label>Category</Form.Label>
+                    <Form.Label style={{ color: '#475569', fontWeight: 600 }}>Category</Form.Label>
                     <Form.Select
                       name="category"
                       value={category}
@@ -466,7 +466,7 @@ const Home = () => {
                 </div>
               )}
 
-              <div className="text-white iconBtnBox">
+              <div className="iconBtnBox">
                 <FormatListBulletedIcon
                   sx={{ cursor: "pointer" }}
                   onClick={handleTableClick}
@@ -616,13 +616,13 @@ const Home = () => {
                 </Modal>
               </div>
             </div>
-            <br style={{ color: "white" }}></br>
+            <br />
 
             {frequency === "custom" && view !== "line" && view !== "smart" && view !== "budget" ? (
               <>
                 <div className="date">
                   <div className="form-group">
-                    <label htmlFor="startDate" className="text-white">
+                    <label htmlFor="startDate" style={{ color: '#475569', fontWeight: 600, display: 'block', marginBottom: 6 }}>
                       Start Date:
                     </label>
                     <div>
@@ -636,7 +636,7 @@ const Home = () => {
                     </div>
                   </div>
                   <div className="form-group">
-                    <label htmlFor="endDate" className="text-white">
+                    <label htmlFor="endDate" style={{ color: '#475569', fontWeight: 600, display: 'block', marginBottom: 6 }}>
                       End Date:
                     </label>
                     <div>

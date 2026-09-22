@@ -95,10 +95,10 @@ const FamilyModeModal = ({ show, onHide, user }) => {
 
   return (
     <Modal show={show} onHide={onHide} centered size="lg">
-      <Modal.Header closeButton style={{ background: "#111827", borderBottom: "1px solid rgba(108,71,255,0.2)" }}>
-        <Modal.Title style={{ color: "#fff" }}>👨‍👧 Family Mode</Modal.Title>
+      <Modal.Header closeButton style={{ background: "#ffffff", borderBottom: "1px solid rgba(108,71,255,0.1)" }}>
+        <Modal.Title style={{ color: "#111827" }}>👨‍👧 Family Mode</Modal.Title>
       </Modal.Header>
-      <Modal.Body style={{ background: "#0d0f17", minHeight: 300 }}>
+      <Modal.Body style={{ background: "#f8fafc", minHeight: 300 }}>
         {error && (
           <div style={{ color: "#FF6B6B", background: "rgba(255,59,48,0.1)", padding: "8px 14px", borderRadius: 8, marginBottom: 14, fontSize: 13 }}>
             {error}
@@ -113,17 +113,17 @@ const FamilyModeModal = ({ show, onHide, user }) => {
         <Tab.Container defaultActiveKey="wallets">
           <Nav variant="pills" style={{ marginBottom: 20, gap: 8 }}>
             <Nav.Item>
-              <Nav.Link eventKey="wallets" style={{ color: "#e2e8f0", fontSize: 13 }}>
+              <Nav.Link eventKey="wallets" style={{ color: "#475569", fontSize: 13, fontWeight: 600 }}>
                 My Wallets {wallets.length > 0 && <Badge bg="primary">{wallets.length}</Badge>}
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link eventKey="create" style={{ color: "#e2e8f0", fontSize: 13 }}>
+              <Nav.Link eventKey="create" style={{ color: "#475569", fontSize: 13, fontWeight: 600 }}>
                 Create Wallet
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link eventKey="join" style={{ color: "#e2e8f0", fontSize: 13 }}>
+              <Nav.Link eventKey="join" style={{ color: "#475569", fontSize: 13, fontWeight: 600 }}>
                 Join Wallet
               </Nav.Link>
             </Nav.Item>
@@ -137,7 +137,7 @@ const FamilyModeModal = ({ show, onHide, user }) => {
                   <BsSpinner size="sm" /> Loading wallets...
                 </div>
               ) : wallets.length === 0 ? (
-                <div style={{ textAlign: "center", padding: 32, color: "#94a3b8" }}>
+                <div style={{ textAlign: "center", padding: 32, color: "#64748b" }}>
                   <p style={{ fontSize: 32, marginBottom: 8 }}>🏠</p>
                   <p>No shared wallets yet. Create one or join with an invite token.</p>
                 </div>
@@ -151,26 +151,26 @@ const FamilyModeModal = ({ show, onHide, user }) => {
                         style={{
                           padding: 16,
                           borderRadius: 12,
-                          background: "rgba(255,255,255,0.04)",
-                          border: "1px solid rgba(108,71,255,0.2)",
+                          background: "#ffffff",
+                          border: "1px solid #e2e8f0",
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.05)"
                         }}
                       >
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                          <strong style={{ color: "#fff", fontSize: 16 }}>{w.name}</strong>
+                          <strong style={{ color: "#111827", fontSize: 16 }}>{w.name}</strong>
                           <Badge bg={isOwner ? "primary" : "secondary"}>
                             {isOwner ? "Owner" : "Supporter"}
                           </Badge>
                         </div>
-                        <div style={{ display: "flex", gap: 16, fontSize: 13, color: "#94a3b8", marginBottom: 10 }}>
+                        <div style={{ display: "flex", gap: 16, fontSize: 13, color: "#475569", marginBottom: 10 }}>
                           <span>👤 Owner: {w.owner?.name || "—"}</span>
                           <span>🤝 Supporter: {w.supporter?.name || "Not joined yet"}</span>
                         </div>
                         {isOwner && !w.supporter && (
                           <Button
                             size="sm"
-                            variant="outline-light"
                             onClick={() => handleGenerateInvite(w._id)}
-                            style={{ borderColor: "rgba(108,71,255,0.4)", fontSize: 12 }}
+                            style={{ background: "rgba(108,71,255,0.1)", color: "#6C47FF", border: "none", fontSize: 12, fontWeight: 600 }}
                           >
                             Generate Invite Link
                           </Button>
@@ -180,7 +180,7 @@ const FamilyModeModal = ({ show, onHide, user }) => {
                   })}
                   {generatedToken && (
                     <div style={{ padding: 14, borderRadius: 10, background: "rgba(108,71,255,0.08)", border: "1px solid rgba(108,71,255,0.25)" }}>
-                      <div style={{ color: "#cbd5e1", fontSize: 12, marginBottom: 6 }}>Share this token (valid 24h):</div>
+                      <div style={{ color: "#334155", fontSize: 12, marginBottom: 6, fontWeight: 600 }}>Share this token (valid 24h):</div>
                       <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                         <code style={{ color: "#8B6BFF", fontSize: 13, flex: 1, wordBreak: "break-all" }}>
                           {generatedToken}
@@ -199,13 +199,13 @@ const FamilyModeModal = ({ show, onHide, user }) => {
             <Tab.Pane eventKey="create">
               <div style={{ maxWidth: 400 }}>
                 <Form.Group className="mb-3">
-                  <Form.Label style={{ color: "#cbd5e1", fontSize: 13 }}>Wallet Name</Form.Label>
+                  <Form.Label style={{ color: "#475569", fontSize: 13, fontWeight: 600 }}>Wallet Name</Form.Label>
                   <Form.Control
                     type="text"
                     placeholder='e.g., "Family Budget" or "Roommates"'
                     value={walletName}
                     onChange={(e) => setWalletName(e.target.value)}
-                    style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#e2e8f0" }}
+                    style={{ background: "#ffffff", border: "1px solid #cbd5e1", color: "#111827" }}
                   />
                 </Form.Group>
                 <Button
@@ -221,13 +221,13 @@ const FamilyModeModal = ({ show, onHide, user }) => {
             <Tab.Pane eventKey="join">
               <div style={{ maxWidth: 400 }}>
                 <Form.Group className="mb-3">
-                  <Form.Label style={{ color: "#cbd5e1", fontSize: 13 }}>Invite Token</Form.Label>
+                  <Form.Label style={{ color: "#475569", fontSize: 13, fontWeight: 600 }}>Invite Token</Form.Label>
                   <Form.Control
                     type="text"
                     placeholder="Paste the invite token here"
                     value={inviteToken}
                     onChange={(e) => setInviteToken(e.target.value)}
-                    style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#e2e8f0" }}
+                    style={{ background: "#ffffff", border: "1px solid #cbd5e1", color: "#111827" }}
                   />
                 </Form.Group>
                 <Button

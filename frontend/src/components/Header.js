@@ -42,11 +42,11 @@ const Header = ({ isSharedWallet = false }) => {
           init={particlesInit}
           loaded={particlesLoaded}
           options={{
-            background: { color: { value: '#000' } },
+            background: { color: { value: '#f4f6f8' } },
             fpsLimit: 60,
             particles: {
               number: { value: 200, density: { enable: true, value_area: 800 } },
-              color: { value: '#ffcc00' },
+              color: { value: '#6C47FF' },
               shape: { type: 'circle' },
               opacity: { value: 0.5, random: true },
               size: { value: 3, random: { enable: true, minimumValue: 1 } },
@@ -63,8 +63,8 @@ const Header = ({ isSharedWallet = false }) => {
             bottom: 0,
           }}
         />
-        <Navbar className="navbarCSS" collapseOnSelect expand="lg" style={{ position: 'relative', zIndex: 2 }}>
-          <Navbar.Brand href="/" className="text-white navTitle">
+        <Navbar className="navbarCSS" collapseOnSelect expand="lg" style={{ position: 'relative', zIndex: 2, borderBottom: '1px solid rgba(108,71,255,0.1)', background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(10px)' }}>
+          <Navbar.Brand href="/" className="navTitle" style={{ color: '#111827', fontWeight: 800 }}>
             IIITL Bachat
           </Navbar.Brand>
           <Navbar.Toggle
@@ -74,15 +74,15 @@ const Header = ({ isSharedWallet = false }) => {
             <span
               className="navbar-toggler-icon"
               style={{
-                background: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e")`,
+                background: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(17, 24, 39)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e")`,
               }}
             ></span>
           </Navbar.Toggle>
           <div>
-            <Navbar.Collapse id="responsive-navbar-nav" style={{ color: "white" }}>
+            <Navbar.Collapse id="responsive-navbar-nav" style={{ color: "#111827" }}>
               {user ? (
                 <Nav style={{alignItems:'center'}}>
-                  <Nav.Link onClick={() => navigate("/insights")} className="text-white mr-3">
+                  <Nav.Link onClick={() => navigate("/insights")} style={{ color: '#475569', fontWeight: 600, marginRight: 12 }}>
                     📊 Insights
                   </Nav.Link>
                   {isSharedWallet && (
@@ -90,7 +90,7 @@ const Header = ({ isSharedWallet = false }) => {
                       🔄 Live
                     </span>
                   )}
-                  <Button variant="outline-light" size="sm" onClick={() => setShowFamily(true)} style={{ marginRight: 12 }}>
+                  <Button size="sm" onClick={() => setShowFamily(true)} style={{ marginRight: 12, background: "rgba(108,71,255,0.1)", color: "#6C47FF", border: "1px solid rgba(108,71,255,0.3)" }}>
                     👨‍👧 Family Mode
                   </Button>
                   {user.avatarImage && (

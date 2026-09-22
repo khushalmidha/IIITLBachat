@@ -79,13 +79,13 @@ const WeeklyBudgetCard = ({ userId }) => {
 
   return (
     <div style={{ marginTop: 18 }}>
-      <Card className="smartCard" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(108,71,255,0.2)" }}>
+      <Card className="smartCard" style={{ background: "#ffffff", border: "1px solid #e2e8f0", boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}>
         <Card.Body>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
             <div>
-              <Card.Title style={{ color: "#fff", fontSize: 20 }}>📅 Weekly Budget</Card.Title>
+              <Card.Title style={{ color: "#111827", fontSize: 20 }}>📅 Weekly Budget</Card.Title>
               {budgetData?.weekStart && (
-                <Card.Text style={{ color: "#94a3b8", fontSize: 13 }}>
+                <Card.Text style={{ color: "#475569", fontSize: 13 }}>
                   {new Date(budgetData.weekStart).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
                   {" — "}
                   {new Date(budgetData.weekEnd).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
@@ -94,9 +94,9 @@ const WeeklyBudgetCard = ({ userId }) => {
             </div>
             <Button
               size="sm"
-              variant="outline-light"
+              variant="outline-secondary"
               onClick={() => setEditing(!editing)}
-              style={{ borderColor: "rgba(108,71,255,0.4)" }}
+              style={{ borderColor: "#cbd5e1", color: "#475569" }}
             >
               {editing ? "Cancel" : hasBudget ? "Edit Budget" : "Set Budget"}
             </Button>
@@ -106,7 +106,7 @@ const WeeklyBudgetCard = ({ userId }) => {
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12 }}>
               {BUDGET_CATEGORIES.map((cat) => (
                 <Form.Group key={cat}>
-                  <Form.Label style={{ color: "#cbd5e1", fontSize: 13 }}>{cat}</Form.Label>
+                  <Form.Label style={{ color: "#475569", fontSize: 13, fontWeight: 600 }}>{cat}</Form.Label>
                   <Form.Control
                     size="sm"
                     type="number"
@@ -114,7 +114,7 @@ const WeeklyBudgetCard = ({ userId }) => {
                     value={editValues[cat] || ""}
                     onChange={(e) => setEditValues({ ...editValues, [cat]: Number(e.target.value) || 0 })}
                     placeholder="₹0"
-                    style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#e2e8f0" }}
+                    style={{ background: "#ffffff", border: "1px solid #cbd5e1", color: "#111827" }}
                   />
                 </Form.Group>
               ))}
@@ -127,7 +127,7 @@ const WeeklyBudgetCard = ({ userId }) => {
                 >
                   {saving ? "Saving..." : "Save Budget"}
                 </Button>
-                <span style={{ color: "#94a3b8", fontSize: 13, alignSelf: "center" }}>
+                <span style={{ color: "#475569", fontSize: 13, alignSelf: "center" }}>
                   Total: {formatCurrency(Object.values(editValues).reduce((s, v) => s + (Number(v) || 0), 0))}
                 </span>
               </div>
@@ -137,15 +137,15 @@ const WeeklyBudgetCard = ({ userId }) => {
               {/* Overall progress */}
               <div style={{ marginBottom: 20 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                  <span style={{ color: "#e2e8f0", fontWeight: 700 }}>Total Spent</span>
-                  <span style={{ color: totalSpent > totalBudget ? "#FF6B6B" : "#00CC66", fontWeight: 700 }}>
+                  <span style={{ color: "#111827", fontWeight: 700 }}>Total Spent</span>
+                  <span style={{ color: totalSpent > totalBudget ? "#dc2626" : "#16a34a", fontWeight: 700 }}>
                     {formatCurrency(totalSpent)} / {formatCurrency(totalBudget)}
                   </span>
                 </div>
                 <ProgressBar
                   now={Math.min(100, (totalSpent / totalBudget) * 100)}
                   variant={progressVariant(totalSpent, totalBudget)}
-                  style={{ height: 10, background: "rgba(255,255,255,0.06)" }}
+                  style={{ height: 10, background: "#e2e8f0" }}
                 />
               </div>
 
@@ -162,23 +162,23 @@ const WeeklyBudgetCard = ({ userId }) => {
                       style={{
                         padding: 12,
                         borderRadius: 10,
-                        background: "rgba(255,255,255,0.03)",
-                        border: `1px solid ${pct > 100 ? "rgba(255,59,48,0.3)" : "rgba(108,71,255,0.15)"}`,
+                        background: "#f8fafc",
+                        border: `1px solid ${pct > 100 ? "#fca5a5" : "#e2e8f0"}`,
                       }}
                     >
                       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                        <span style={{ color: "#cbd5e1", fontWeight: 600, fontSize: 13 }}>{cat}</span>
-                        <span style={{ color: pct > 100 ? "#FF6B6B" : "#94a3b8", fontSize: 12 }}>
+                        <span style={{ color: "#111827", fontWeight: 600, fontSize: 13 }}>{cat}</span>
+                        <span style={{ color: pct > 100 ? "#dc2626" : "#475569", fontSize: 12 }}>
                           {formatCurrency(spent)} / {formatCurrency(budget)} ({pct}%)
                         </span>
                       </div>
                       <ProgressBar
                         now={Math.min(100, pct)}
                         variant={progressVariant(spent, budget)}
-                        style={{ height: 6, background: "rgba(255,255,255,0.06)" }}
+                        style={{ height: 6, background: "#e2e8f0" }}
                       />
                       {pct > 100 && (
-                        <div style={{ color: "#FF6B6B", fontSize: 11, marginTop: 4, fontWeight: 600 }}>
+                        <div style={{ color: "#dc2626", fontSize: 11, marginTop: 4, fontWeight: 600 }}>
                           🚩 Over by {formatCurrency(spent - budget)}
                         </div>
                       )}

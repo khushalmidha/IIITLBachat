@@ -105,7 +105,7 @@ const Register = () => {
         options={{
           background: {
             color: {
-              value: '#000',
+              value: '#f4f6f8',
             },
           },
           fpsLimit: 60,
@@ -118,7 +118,7 @@ const Register = () => {
               },
             },
             color: {
-              value: '#ffcc00',
+              value: '#6C47FF',
             },
             shape: {
               type: 'circle',
@@ -165,26 +165,26 @@ const Register = () => {
         }}
       />
 
-      <Container className="mt-5" style={{position: 'relative', zIndex: "2 !important", color:"white !important"}}>
+      <Container className="mt-5" style={{position: 'relative', zIndex: "2 !important" }}>
       <Row>
         <h1 className="text-center">
-          <AccountBalanceWalletIcon sx={{ fontSize: 40, color: "white"}}  className="text-center" />
+          <AccountBalanceWalletIcon sx={{ fontSize: 40, color: "#6C47FF"}}  className="text-center" />
         </h1>
-        <h1 className="text-center text-white">Welcome to Expense Management System</h1>
+        <h1 className="text-center" style={{ color: "#111827", fontWeight: 800 }}>Welcome to Expense Management System</h1>
         <Col md={{ span: 6, offset: 3 }}>
-          <h2 className="text-white text-center mt-5" >Registration</h2>
+          <h2 className="text-center mt-5" style={{ color: "#111827" }}>Registration</h2>
           <Form>
             <Form.Group controlId="formBasicName" className="mt-3" >
-              <Form.Label className="text-white">Name</Form.Label>
+              <Form.Label style={{ color: "#475569", fontWeight: 600 }}>Name</Form.Label>
               <Form.Control type="text"  name="name" placeholder="Full name" value={values.name} onChange={handleChange} />
             </Form.Group>
             <Form.Group controlId="formBasicEmail" className="mt-3">
-              <Form.Label className="text-white">Email address</Form.Label>
+              <Form.Label style={{ color: "#475569", fontWeight: 600 }}>Email address</Form.Label>
               <Form.Control type="email"  name="email" placeholder="Enter email" value={values.email} onChange={handleChange}/>
             </Form.Group>
 
             <Form.Group controlId="formBasicPassword" className="mt-3">
-              <Form.Label className="text-white">Password</Form.Label>
+              <Form.Label style={{ color: "#475569", fontWeight: 600 }}>Password</Form.Label>
               <Form.Control type="password"  name="password" placeholder="Password" value={values.password} onChange={handleChange} />
             </Form.Group>
             <div style={{width: "100%", display: "flex" , alignItems:"center", justifyContent:"center", flexDirection: "column"}} className="mt-4">
@@ -196,7 +196,7 @@ const Register = () => {
                 >
                   {loading ? "Registering..." : "Signup"}
                 </Button>
-                <p className="mt-3 mb-0 text-center" style={{ color: "#cfcfcf", fontSize: 14 }}>
+                <p className="mt-3 mb-0 text-center" style={{ color: "#64748b", fontSize: 14 }}>
                   After signup, you will select an avatar to finish your profile.
                 </p>
                <GoogleAuthButton
@@ -204,7 +204,7 @@ const Register = () => {
                 onError={handleGoogleError}
               />
 
-              <p className="mt-3" style={{color: "#9d9494"}}>Already have an account? <Link to="/login" className="text-white lnk" >Login</Link></p>
+              <p className="mt-3" style={{color: "#475569"}}>Already have an account? <Link to="/login" className="lnk" style={{ color: "#6C47FF", fontWeight: 700 }} >Login</Link></p>
             </div>
           </Form>
         </Col>

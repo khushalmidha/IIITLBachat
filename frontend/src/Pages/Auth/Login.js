@@ -101,7 +101,7 @@ const Login = () => {
         options={{
           background: {
             color: {
-              value: "#000",
+              value: "#f4f6f8",
             },
           },
           fpsLimit: 60,
@@ -114,7 +114,7 @@ const Login = () => {
               },
             },
             color: {
-              value: "#ffcc00",
+              value: "#6C47FF",
             },
             shape: {
               type: "circle",
@@ -168,14 +168,14 @@ const Login = () => {
           <Col md={{ span: 6, offset: 3 }}>
             <h1 className="text-center mt-5">
               <AccountBalanceWalletIcon
-                sx={{ fontSize: 40, color: "white" }}
+                sx={{ fontSize: 40, color: "#6C47FF" }}
                 className="text-center"
               />
             </h1>
-            <h2 className="text-white text-center ">Login</h2>
+            <h2 className="text-center" style={{ color: "#111827" }}>Login</h2>
             <Form>
               <Form.Group controlId="formBasicEmail" className="mt-3">
-                <Form.Label className="text-white">Email address</Form.Label>
+                <Form.Label style={{ color: "#475569", fontWeight: 600 }}>Email address</Form.Label>
                 <Form.Control
                   type="email"
                   placeholder="Enter email"
@@ -186,7 +186,7 @@ const Login = () => {
               </Form.Group>
 
               <Form.Group controlId="formBasicPassword" className="mt-3">
-                <Form.Label className="text-white">Password</Form.Label>
+                <Form.Label style={{ color: "#475569", fontWeight: 600 }}>Password</Form.Label>
                 <Form.Control
                   type="password"
                   name="password"
@@ -213,16 +213,16 @@ const Login = () => {
                 >
                   {loading ? "Signin…" : "Login"}
                 </Button>
-                <p className="mt-3 mb-0 text-center" style={{ color: "#cfcfcf", fontSize: 14 }}>
+                <p className="mt-3 mb-0 text-center" style={{ color: "#64748b", fontSize: 14 }}>
                   New here? Please sign up first, then choose your avatar.
                 </p>
               <GoogleAuthButton
                   onSuccess={handleGoogleSuccess}
                   onError={handleGoogleError}
                 />
-                <p className="mt-3" style={{ color: "#9d9494" }}>
+                <p className="mt-3" style={{ color: "#475569" }}>
                   Don't Have an Account?{" "}
-                  <Link to="/register" className="text-white lnk">
+                  <Link to="/register" className="lnk" style={{ color: "#6C47FF", fontWeight: 700 }}>
                     Register
                   </Link>
                 </p>
