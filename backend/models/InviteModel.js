@@ -1,0 +1,33 @@
+import mongoose from "mongoose";
+
+const inviteSchema = new mongoose.Schema({
+  walletId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Wallet",
+    required: true,
+  },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  token: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  expiresAt: {
+    type: Date,
+    required: true,
+  },
+  used: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+inviteSchema.index({ token: 1 });
+
+const Invite = mongoose.model("Invite", inviteSchema);
+
+export default Invite;

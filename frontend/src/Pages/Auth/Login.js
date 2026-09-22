@@ -19,7 +19,7 @@ const Login = () => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
       const user = JSON.parse(savedUser);
-      navigate(user.isAvatarImageSet && user.avatarImage ? "/" : "/setAvatar");
+      navigate(user.isAvatarImageSet && user.avatarImage ? "/dashboard" : "/setAvatar");
     }
   }, [navigate]);
 
@@ -46,7 +46,7 @@ const Login = () => {
   const handleGoogleSuccess = useCallback((data) => {
     localStorage.setItem("user", JSON.stringify(data.user));
     toast.success(data.message, toastOptions);
-    navigate(data.user?.isAvatarImageSet && data.user?.avatarImage ? "/" : "/setAvatar");
+    navigate(data.user?.isAvatarImageSet && data.user?.avatarImage ? "/dashboard" : "/setAvatar");
   }, [navigate, toastOptions]);
 
   const handleGoogleError = useCallback((message) => {
@@ -69,7 +69,7 @@ const Login = () => {
     const data = res.data
     if (data.success === true) {
       localStorage.setItem("user", JSON.stringify(data.user));
-      navigate(data.user?.isAvatarImageSet && data.user?.avatarImage ? "/" : "/setAvatar");
+      navigate(data.user?.isAvatarImageSet && data.user?.avatarImage ? "/dashboard" : "/setAvatar");
       toast.success(data.message, toastOptions);
       setLoading(false);
     } else {

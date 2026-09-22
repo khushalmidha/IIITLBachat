@@ -503,3 +503,68 @@ export const investmentInsightsController = async (req, res) => {
     return res.status(500).json({ success: false, message: err.message });
   }
 };
+
+export const voiceExpenseController = async (req, res) => {
+  try {
+    const { audioBase64, mimeType = "audio/webm" } = req.body;
+
+    if (!audioBase64) {
+      return res.status(400).json({ success: false, message: "Audio data is required" });
+    }
+
+    // Step 1: Transcribe using Sarvam API
+    if (!process.env.SARVAM_API_KEY) {
+      return res.status(500).json({ success: false, message: "SARVAM_API_KEY is not configured" });
+    }
+
+    const sarvamRes = await fetch("https://api.sarvam.ai/speech-to-text", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "api-subscription-key": process.env.SARVAM_API_KEY,
+      },
+      body: JSON.stringify({
+        model: "saarika:v2",
+        language_code: "hi-IN",
+        audio: audioBase64,
+        with_timestamps: false,
+      }),
+    });
+
+    const sarvamData = await sarvamRes.json();
+    const transcript = sarvamData.transcript || "";
+
+    if (!transcript) {
+      return res.status(422).json({
+        success: false,
+        message: "Could not transcribe audio. Please try again.",
+      });
+    }
+
+    // Step 2: Extract transaction from transcript using Gemini
+    const prompt = `
+Extract a financial transaction from this spoken text (may be in Hindi, Hinglish, or English):
+"${transcript}"
+Return only JSON: {"title":"","amount":0,"description":"","category":"","transactionType":"credit or expense","date":"","confidence":0}
+category must be one of: Groceries, Rent, Salary, Tip, Food, Medical, Utilities, Entertainment, Transportation, Other
+transactionType must be either "credit" or "expense"
+date should be YYYY-MM-DD format. If no date mentioned, use today's date.
+If amount not mentioned, set amount to 0.
+`;
+
+    const text = await callGemini(
+      [{ role: "user", parts: [{ text: prompt }] }],
+      { temperature: 0.1 }
+    );
+
+    const transaction = normalizeTransaction(parseJsonFromText(text));
+
+    return res.status(200).json({
+      success: true,
+      transcript,
+      transaction,
+    });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+};

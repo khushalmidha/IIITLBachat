@@ -126,7 +126,7 @@ const SetAvatar = () => {
         if (data.success && data.isSet) {
           localStorage.setItem("user", JSON.stringify(data.user));
           toast.success("Avatar selected successfully", toastOptions);
-          navigate("/");
+          navigate("/dashboard");
         } else {
           toast.error(data.message || "Error setting avatar, please try again", toastOptions);
         }

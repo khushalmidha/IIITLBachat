@@ -5,10 +5,12 @@ import "./style.css";
 import { useNavigate } from 'react-router-dom';
 import Particles from "react-tsparticles";
 import { loadFull } from "tsparticles";
+import FamilyModeModal from './FamilyModeModal';
 
-const Header = () => {
+const Header = ({ isSharedWallet = false }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [showFamily, setShowFamily] = useState(false);
 
   useEffect(() => {    
     if (localStorage.getItem("user")) {
@@ -80,6 +82,17 @@ const Header = () => {
             <Navbar.Collapse id="responsive-navbar-nav" style={{ color: "white" }}>
               {user ? (
                 <Nav style={{alignItems:'center'}}>
+                  <Nav.Link onClick={() => navigate("/insights")} className="text-white mr-3">
+                    📊 Insights
+                  </Nav.Link>
+                  {isSharedWallet && (
+                    <span style={{ background: "rgba(0,204,102,0.15)", color: "#00CC66", padding: "4px 8px", borderRadius: 12, fontSize: 12, fontWeight: 700, marginRight: 12 }}>
+                      🔄 Live
+                    </span>
+                  )}
+                  <Button variant="outline-light" size="sm" onClick={() => setShowFamily(true)} style={{ marginRight: 12 }}>
+                    👨‍👧 Family Mode
+                  </Button>
                   {user.avatarImage && (
                     <Image 
                       src={user.avatarImage} 
@@ -87,7 +100,7 @@ const Header = () => {
                       roundedCircle 
                       width="40" 
                       height="40" 
-                      style={{marginRight : 2}}
+                      style={{marginRight : 12}}
                     />
                   )}
                   <Button variant="primary" onClick={handleShowLogout} className="ml-2">
@@ -105,6 +118,9 @@ const Header = () => {
           </div>
         </Navbar>
       </div>
+      {showFamily && user && (
+        <FamilyModeModal show={showFamily} onHide={() => setShowFamily(false)} user={user} />
+      )}
     </>
   );
 };

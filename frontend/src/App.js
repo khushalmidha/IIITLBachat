@@ -7,6 +7,8 @@ import Register from './Pages/Auth/Register';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from './Pages/Home/Home';
 import SetAvatar from './Pages/Avatar/setAvatar';
+import Landing from './Pages/Landing/Landing';
+import Insights from './Pages/Insights/Insights';
 
 
 
@@ -16,7 +18,9 @@ const App = () => {
       <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Landing />} />
+          <Route path="/dashboard" element={<Home />} />
+          <Route path="/insights" element={<Insights />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/setAvatar" element={<SetAvatar/>} />

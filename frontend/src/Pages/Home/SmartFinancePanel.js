@@ -3,6 +3,7 @@ import { Alert, Button, Card, Col, Form, Row, Spinner as BsSpinner } from "react
 import axios from "axios";
 // import { financeChatAPI, parseReceiptAPI } from "../../utils/ApiRequest";
 import { investmentInsightsAPI, investmentPlanAPI, parseReceiptAPI } from "../../utils/ApiRequest";
+import ReceiptReviewModal from "../../components/ReceiptReviewModal";
 
 const toBase64Payload = (file) =>
     new Promise((resolve, reject) => {
@@ -29,6 +30,7 @@ const SmartFinancePanel = ({ transactions, onReceiptParsed }) => {
     const [insights, setInsights] = useState(null);
     const [investmentPlan, setInvestmentPlan] = useState(null);
     const [error, setError] = useState("");
+    const [pendingReceipts, setPendingReceipts] = useState(null);
 
     const monthlySummary = useMemo(() => {
         const now = new Date();
@@ -92,7 +94,13 @@ const SmartFinancePanel = ({ transactions, onReceiptParsed }) => {
                 mimeType: file.type || "image/jpeg",
             });
 
-            onReceiptParsed(data.transactions || (data.transaction ? [data.transaction] : []));
+            // Show review modal instead of auto-saving
+            const parsed = data.transactions || (data.transaction ? [data.transaction] : []);
+            if (parsed.length > 0) {
+                setPendingReceipts(parsed);
+            } else {
+                setError("No transactions found in the uploaded document");
+            }
         } catch (err) {
             setError(err.response?.data?.message || "Could not read the receipt");
         } finally {
@@ -276,6 +284,16 @@ const SmartFinancePanel = ({ transactions, onReceiptParsed }) => {
                     )}
                 </Card.Body>
             </Card>
+            {pendingReceipts && (
+                <ReceiptReviewModal
+                    transactions={pendingReceipts}
+                    onConfirm={(selected) => {
+                        onReceiptParsed(selected);
+                        setPendingReceipts(null);
+                    }}
+                    onCancel={() => setPendingReceipts(null)}
+                />
+            )}
         </div>
     );
 };

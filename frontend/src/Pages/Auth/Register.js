@@ -21,7 +21,7 @@ const Register = () => {
     const savedUser = localStorage.getItem("user");
     if(savedUser){
       const user = JSON.parse(savedUser);
-      navigate(user.isAvatarImageSet && user.avatarImage ? "/" : "/setAvatar");
+      navigate(user.isAvatarImageSet && user.avatarImage ? "/dashboard" : "/setAvatar");
     }
   }, [navigate]);
 
@@ -58,7 +58,7 @@ const Register = () => {
    const handleGoogleSuccess = useCallback((data) => {
     localStorage.setItem("user", JSON.stringify(data.user));
     toast.success(data.message, toastOptions);
-    navigate(data.user?.isAvatarImageSet && data.user?.avatarImage ? "/" : "/setAvatar");
+    navigate(data.user?.isAvatarImageSet && data.user?.avatarImage ? "/dashboard" : "/setAvatar");
   }, [navigate, toastOptions]);
 
   const handleGoogleError = useCallback((message) => {
@@ -83,7 +83,7 @@ const Register = () => {
         localStorage.setItem("user", JSON.stringify(data.user));
         toast.success(data.message, toastOptions);
         setLoading(true);
-        navigate(data.user?.isAvatarImageSet && data.user?.avatarImage ? "/" : "/setAvatar");
+        navigate(data.user?.isAvatarImageSet && data.user?.avatarImage ? "/dashboard" : "/setAvatar");
       }
       else{
         toast.error(data.message, toastOptions);

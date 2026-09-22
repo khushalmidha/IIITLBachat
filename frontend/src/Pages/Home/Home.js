@@ -21,6 +21,10 @@ import MonthlyCharts from './MonthlyCharts';
 import SmartFinancePanel from "./SmartFinancePanel";
 import FinanceChatWidget from "./FinanceChatWidget";
 import InvestmentTicker from "./InvestmentTicker";
+import CalendarViewWeekIcon from '@mui/icons-material/CalendarViewWeek';
+import WeeklyBudgetCard from "../../components/WeeklyBudgetCard";
+import VoiceExpenseButton from "../../components/VoiceExpenseButton";
+
 const Home = () => {
   const navigate = useNavigate();
 
@@ -46,6 +50,7 @@ const Home = () => {
   const [endDate, setEndDate] = useState(null);
   const [view, setView] = useState("table");
   const [avatar, setAvatar] = useState(false);
+  const [isSharedWallet, setIsSharedWallet] = useState(false);
   const [investmentPlan, setInvestmentPlan] = useState({
     shortTerm: {},
     mediumTerm: {},
@@ -289,6 +294,28 @@ const Home = () => {
     fetchAllTransactions();
   }, [avatar, cUser?._id, refresh, frequency, endDate, type, startDate, category, toastOptions]);
 
+  // Real-time polling for shared wallets (Phase 8)
+  useEffect(() => {
+    if (!isSharedWallet) return;
+    const interval = setInterval(() => {
+      setRefresh((prev) => !prev);
+    }, 10000);
+    const handleFocus = () => setRefresh((prev) => !prev);
+    window.addEventListener("focus", handleFocus);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, [isSharedWallet]);
+
+  // Check if user is in any shared wallet to enable live sync
+  useEffect(() => {
+    if (!cUser?._id) return;
+    axios.post(`${process.env.REACT_APP_API_URL || "https://iiitlbachat.onrender.com"}/api/wallet/mine`, { userId: cUser._id })
+      .then(({ data }) => setIsSharedWallet(data.wallets?.length > 0))
+      .catch(() => setIsSharedWallet(false));
+  }, [cUser?._id, refresh]);
+
   const handleTableClick = (e) => {
     setView("table");
   };
@@ -303,6 +330,10 @@ const Home = () => {
 
   const handleSmartClick = () => {
     setView("smart");
+  };
+
+  const handleBudgetClick = () => {
+    setView("budget");
   };
 
   const handleReceiptParsed = async (parsedTransactions) => {
@@ -360,7 +391,7 @@ const Home = () => {
 
   return (
     <>
-      <Header />
+      <Header isSharedWallet={isSharedWallet} />
 
       {loading ? (
         <>
@@ -373,7 +404,7 @@ const Home = () => {
             className="mt-3"
           >
             <div className="filterRow">
-              {view !== "line" && view !== "smart" && (
+              {view !== "line" && view !== "smart" && view !== "budget" && (
                 <div className="text-white">
                   <Form.Group className="mb-3" controlId="formSelectFrequency">
                     <Form.Label>Select Frequency</Form.Label>
@@ -391,7 +422,7 @@ const Home = () => {
                 </div>
               )}
 
-              {view !== "line" && view !== "smart" && (
+              {view !== "line" && view !== "smart" && view !== "budget" && (
                 <div className="text-white type">
                   <Form.Group className="mb-3" controlId="formSelectFrequency">
                     <Form.Label>Type</Form.Label>
@@ -408,7 +439,7 @@ const Home = () => {
                 </div>
               )}
 
-              {view !== "line" && view !== "smart" && (
+              {view !== "line" && view !== "smart" && view !== "budget" && (
                 <div className="text-white type">
                   <Form.Group className="mb-3" controlId="formSelectCategory">
                     <Form.Label>Category</Form.Label>
@@ -456,8 +487,13 @@ const Home = () => {
                   onClick={handleSmartClick}
                   className={`${view === "smart" ? "iconActive" : "iconDeactive"}`}
                 />
+                <CalendarViewWeekIcon
+                  sx={{ cursor: "pointer" }}
+                  onClick={handleBudgetClick}
+                  className={`${view === "budget" ? "iconActive" : "iconDeactive"}`}
+                />
               </div>
-              {view !== "line" && view !== "smart" && (
+              {view !== "line" && view !== "smart" && view !== "budget" && (
                 <div>
                   <Button className="addNew" onClick={downloadDoc}>Download</Button>
                 </div>
@@ -477,13 +513,27 @@ const Home = () => {
                     <Form>
                       <Form.Group className="mb-3" controlId="formName">
                         <Form.Label>Title</Form.Label>
-                        <Form.Control
-                          name="title"
-                          type="text"
-                          placeholder="Enter Transaction Name"
-                          value={values.title}
-                          onChange={handleChange}
-                        />
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                          <Form.Control
+                            name="title"
+                            type="text"
+                            placeholder="Enter Transaction Name"
+                            value={values.title}
+                            onChange={handleChange}
+                            style={{ flex: 1 }}
+                          />
+                          <VoiceExpenseButton 
+                            onTranscribed={(t) => setValues(prev => ({
+                              ...prev,
+                              title: t.title || prev.title,
+                              amount: t.amount || prev.amount,
+                              description: t.description || prev.description,
+                              category: t.category || prev.category,
+                              date: t.date || new Date().toISOString().slice(0, 10),
+                              transactionType: t.transactionType || prev.transactionType,
+                            }))} 
+                          />
+                        </div>
                       </Form.Group>
 
                       <Form.Group className="mb-3" controlId="formAmount">
@@ -568,7 +618,7 @@ const Home = () => {
             </div>
             <br style={{ color: "white" }}></br>
 
-            {frequency === "custom" && view !== "line" && view !== "smart" ? (
+            {frequency === "custom" && view !== "line" && view !== "smart" && view !== "budget" ? (
               <>
                 <div className="date">
                   <div className="form-group">
@@ -606,7 +656,7 @@ const Home = () => {
               <></>
             )}
 
-            {view !== "line" && view !== "smart" && (
+            {view !== "line" && view !== "smart" && view !== "budget" && (
               <div className="containerBtn">
                 <Button variant="primary" onClick={handleReset}>
                   Reset Filter
@@ -629,6 +679,8 @@ const Home = () => {
                   type="all"
                 />
               </>
+            ) : view === "budget" ? (
+              <WeeklyBudgetCard userId={cUser?._id} />
             ) : (
               <SmartFinancePanel
                 transactions={transactions}

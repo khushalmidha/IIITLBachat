@@ -9,6 +9,9 @@ import morgan from "morgan";
 import transactionRoutes from "./Routers/Transactions.js";
 import userRoutes from "./Routers/userRouter.js";
 import aiRoutes from "./Routers/aiRouter.js";
+import walletRoutes from "./Routers/walletRouter.js";
+import budgetRoutes from "./Routers/budgetRouter.js";
+
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: resolve(__dirname, ".env") });
@@ -48,6 +51,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/api/v1", transactionRoutes);
 app.use("/api/auth", userRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/wallet", walletRoutes);
+app.use("/api/budget", budgetRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

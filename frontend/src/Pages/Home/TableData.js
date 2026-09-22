@@ -3,9 +3,11 @@ import { Button, Container, Form, Modal, Table } from "react-bootstrap";
 import moment from "moment";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import FlagIcon from "@mui/icons-material/Flag";
 import "./home.css";
 import { deleteTransactions, editTransactions } from "../../utils/ApiRequest";
 import axios from "axios";
+import ExceptionConversation from "../../components/ExceptionConversation";
 
 const TableData = (props) => {
   const [show, setShow] = useState(false);
@@ -15,6 +17,8 @@ const TableData = (props) => {
   const [currId, setCurrId] = useState(null);
   const [refresh, setRefresh] = useState(false);
   const [user, setUser] = useState(null);
+  const [exceptions, setExceptions] = useState([]);
+  const [activeException, setActiveException] = useState(null);
 
   const handleEditClick = (itemKey) => {
     // const buttonId = e.target.id;
@@ -87,6 +91,12 @@ const TableData = (props) => {
   useEffect(() => {
     setUser(props.user);
     setTransactions(props.data);
+    
+    if (props.user?._id) {
+      axios.post(`${process.env.REACT_APP_API_URL || "https://iiitlbachat.onrender.com"}/api/budget/exceptions`, { userId: props.user._id })
+        .then(({ data }) => setExceptions(data.exceptions || []))
+        .catch(console.error);
+    }
   }, [props.data,props.user, refresh]);
 
   return (
@@ -126,6 +136,26 @@ const TableData = (props) => {
                       id={item._id}
                       onClick={() => handleDeleteClick(item._id)}
                     />
+
+                    {exceptions.find(ex => ex.transactionId?._id === item._id || ex.transactionId === item._id) && (
+                      <FlagIcon
+                        sx={{ color: "#FF6B6B", cursor: "pointer", marginLeft: "10px" }}
+                        titleAccess="Budget Exception"
+                        onClick={() => setActiveException(exceptions.find(ex => ex.transactionId?._id === item._id || ex.transactionId === item._id))}
+                      />
+                    )}
+
+                    {activeException && (
+                      <ExceptionConversation
+                        exception={activeException}
+                        userId={user?._id}
+                        onClose={() => setActiveException(null)}
+                        onAcknowledge={() => {
+                          setRefresh(!refresh);
+                          setActiveException(null);
+                        }}
+                      />
+                    )}
 
                     {editingTransaction ? (
                       <>

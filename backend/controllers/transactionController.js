@@ -1,6 +1,8 @@
 import moment from "moment";
 import Transaction from "../models/TransactionModel.js";
 import User from "../models/UserSchema.js";
+import WeeklyBudget from "../models/WeeklyBudgetModel.js";
+import Exception from "../models/ExceptionModel.js";
 
 const transactionFields = [
   "title",
@@ -52,6 +54,49 @@ export const addTransactionController = async (req, res) => {
     if (user) {
       user.transactions.push(newTransaction);
       await user.save();
+    }
+
+    // Phase 6: Budget Exception Check
+    if (String(transactionType).toLowerCase() === "expense") {
+      try {
+        const weekStart = moment().startOf("isoWeek").toDate();
+        const weekEnd = moment(weekStart).endOf("isoWeek").toDate();
+        
+        const budget = await WeeklyBudget.findOne({ user: userId, weekStart });
+        if (budget && budget.categories && budget.categories[category] > 0) {
+          const categoryBudget = budget.categories[category];
+          
+          const spending = await Transaction.aggregate([
+            {
+              $match: {
+                user: user._id,
+                transactionType: "expense",
+                category: category,
+                date: { $gte: weekStart, $lte: weekEnd },
+              },
+            },
+            {
+              $group: {
+                _id: null,
+                total: { $sum: "$amount" },
+              },
+            },
+          ]);
+          
+          const totalSpent = spending.length > 0 ? spending[0].total : 0;
+          
+          if (totalSpent > categoryBudget) {
+            await Exception.create({
+              user: userId,
+              transactionId: newTransaction._id,
+              category: category,
+              overAmount: totalSpent - categoryBudget,
+            });
+          }
+        }
+      } catch (exErr) {
+        console.error("Exception check failed:", exErr);
+      }
     }
 
     return res.status(201).json({
