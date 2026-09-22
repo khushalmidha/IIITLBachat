@@ -46,7 +46,7 @@ export function Shell({ isSharedWallet = false }) {
       </a>
       <header className="app-header">
         <div className="app-header-inner">
-          <Link className="app-brand" to="/dashboard" aria-label="IIITL Bachat home">
+          <Link className="app-brand" to="/" aria-label="IIITL Bachat home">
             <span style={{ fontSize: '24px' }}>💳</span>
             <span>
               IIITL<span>BACHAT</span>
