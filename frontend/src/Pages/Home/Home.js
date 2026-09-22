@@ -19,7 +19,6 @@ import * as XLSX from "xlsx";
 import MonthlyCharts from './MonthlyCharts';
 import SmartFinancePanel from "./SmartFinancePanel";
 import FinanceChatWidget from "./FinanceChatWidget";
-import InvestmentTicker from "./InvestmentTicker";
 import CalendarViewWeekIcon from '@mui/icons-material/CalendarViewWeek';
 import WeeklyBudgetCard from "../../components/WeeklyBudgetCard";
 import VoiceExpenseButton from "../../components/VoiceExpenseButton";
@@ -691,7 +690,6 @@ const Home = () => {
             )}
             <ToastContainer />
           </Container>
-            <InvestmentTicker />
             <FinanceChatWidget transactions={transactions} />
           </div>
         </>

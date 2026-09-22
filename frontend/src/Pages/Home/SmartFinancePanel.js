@@ -4,6 +4,7 @@ import axios from "axios";
 // import { financeChatAPI, parseReceiptAPI } from "../../utils/ApiRequest";
 import { investmentInsightsAPI, investmentPlanAPI, parseReceiptAPI } from "../../utils/ApiRequest";
 import ReceiptReviewModal from "../../components/ReceiptReviewModal";
+import InvestmentTicker from "./InvestmentTicker";
 
 const toBase64Payload = (file) =>
     new Promise((resolve, reject) => {
@@ -163,6 +164,9 @@ const SmartFinancePanel = ({ transactions, onReceiptParsed }) => {
     };
     return (
         <div className="smartFinancePanel">
+            <div style={{ marginBottom: '24px', borderRadius: '12px', overflow: 'hidden' }}>
+                <InvestmentTicker />
+            </div>
             {error && <Alert variant="warning">{error}</Alert>}
 
             <Row className="g-3">
