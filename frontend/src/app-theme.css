@@ -43,7 +43,9 @@
 }
 .app-brand > span {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
   font-size: 14px;
   letter-spacing: 0.03em;
   line-height: 1.05;
