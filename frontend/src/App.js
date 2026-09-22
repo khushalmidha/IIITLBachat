@@ -9,7 +9,7 @@ import Home from './Pages/Home/Home';
 import SetAvatar from './Pages/Avatar/setAvatar';
 import Landing from './Pages/Landing/Landing';
 import Insights from './Pages/Insights/Insights';
-
+import Shell from './components/Shell';
 
 
 const App = () => {
@@ -19,11 +19,13 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/dashboard" element={<Home />} />
-          <Route path="/insights" element={<Insights />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/setAvatar" element={<SetAvatar/>} />
+          <Route element={<Shell />}>
+            <Route path="/dashboard" element={<Home />} />
+            <Route path="/insights" element={<Insights />} />
+          </Route>
         </Routes>
       </BrowserRouter>
       </div>

@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-import Header from "../../components/Header";
 import { useNavigate } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import "./insights.css";
@@ -137,15 +136,16 @@ const Insights = () => {
 
   return (
     <>
-      <Header />
       {loading ? (
         <Spinner />
       ) : (
-        <Container className="mt-3 insights-container">
-          <h2 className="insights-title">📊 Insights</h2>
-          <p className="insights-subtitle">Your financial story, at a glance.</p>
-
-          {/* ── Section A: Monthly Overview ── */}
+        <div className="page">
+          <div className="page-heading">
+            <h1>Insights</h1>
+            <p>Your financial story, at a glance.</p>
+          </div>
+          <Container className="insights-container" style={{ padding: 0 }}>
+            {/* ── Section A: Monthly Overview ── */}
           <section className="insights-section">
             <h3 className="insights-section-title">Monthly Overview</h3>
             <div className="insights-stats-row">
@@ -236,6 +236,7 @@ const Insights = () => {
             </div>
           </section>
         </Container>
+        </div>
       )}
     </>
   );

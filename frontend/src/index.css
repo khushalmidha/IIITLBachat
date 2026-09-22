@@ -1,15 +1,4 @@
-*{
-    padding: 0px;
-    margin: 0px;
-    /* background-color: black !important;; */
-}
-
-body, html {
-  padding-bottom: 190px;
-}
-
-@media (max-width: 768px) {
-  body, html {
-    padding-bottom: 180px;
-  }
+* {
+  padding: 0px;
+  margin: 0px;
 }

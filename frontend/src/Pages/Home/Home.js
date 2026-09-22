@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-import Header from "../../components/Header";
 import { useNavigate } from "react-router-dom";
 import { Button, Modal, Form, Container } from "react-bootstrap";
 import "./home.css";
@@ -391,19 +390,28 @@ const Home = () => {
 
   return (
     <>
-      <Header isSharedWallet={isSharedWallet} />
-
       {loading ? (
         <>
           <Spinner />
         </>
       ) : (
         <>
-          <Container
-            style={{ position: "relative", zIndex: "2 !important" }}
-            className="mt-3"
-          >
-            <div className="filterRow">
+          <div className="page">
+            <div className="page-heading" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <h1>Dashboard</h1>
+                <p>Track, manage, and understand your finances.</p>
+              </div>
+              <Button onClick={handleShow} className="button primary">
+                Add Transaction
+              </Button>
+            </div>
+            
+            <Container
+              style={{ position: "relative", zIndex: "2 !important", padding: 0 }}
+              className="mt-3"
+            >
+              <div className="filterRow">
               {view !== "line" && view !== "smart" && view !== "budget" && (
                 <div>
                   <Form.Group className="mb-3" controlId="formSelectFrequency">
@@ -499,12 +507,6 @@ const Home = () => {
                 </div>
               )}
               <div>
-                <Button onClick={handleShow} className="addNew">
-                  Add New
-                </Button>
-                <Button onClick={handleShow} className="mobileBtn">
-                  +
-                </Button>
                 <Modal show={show} onHide={handleClose} centered>
                   <Modal.Header closeButton>
                     <Modal.Title>Add Transaction Details</Modal.Title>
@@ -690,7 +692,8 @@ const Home = () => {
             <ToastContainer />
           </Container>
             <InvestmentTicker />
-          <FinanceChatWidget transactions={transactions} />
+            <FinanceChatWidget transactions={transactions} />
+          </div>
         </>
       )}
     </>
