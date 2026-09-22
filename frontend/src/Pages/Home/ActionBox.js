@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import "./home.css";
-import { editTransactions } from "../../utils/ApiRequest";
-import axios from "axios";
 
 const ActionBox = (props) => {
 

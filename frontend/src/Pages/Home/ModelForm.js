@@ -6,8 +6,6 @@ const ModelForm = ({transaction, onClose, isShow}) => {
 
   // console.log(transaction);
 
-  const [show, setShow] = useState(false);
-
   const [values, setValues] = useState({
     title : "",
     amount : "",
@@ -23,7 +21,9 @@ const ModelForm = ({transaction, onClose, isShow}) => {
   }
 
 
-  const handleClose = () => {setShow(false)};
+  const handleClose = () => {
+    if (onClose) onClose();
+  };
 
   // const handleShow = (index) => {
   //   setShow(true)
