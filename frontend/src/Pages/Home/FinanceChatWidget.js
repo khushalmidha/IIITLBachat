@@ -10,19 +10,29 @@ import { financeChatAPI } from "../../utils/ApiRequest";
 const chatModes = [
   {
     key: "general",
-    label: "Ask General Query",
-    intro: "General finance, saving, budgeting, and Bachat app questions.",
+    label: "Financial Advice",
+    intro: "Ask me anything about budgeting, saving money, or managing your personal finances.",
   },
   {
     key: "investment",
-    label: "Ask Investment Query",
-    intro: "Gold, SIP, mutual funds, Nifty 50, stocks, Bitcoin, and risk basics.",
+    label: "Investment Strategy",
+    intro: "Want to grow your wealth? Ask me about Mutual Funds, SIPs, Gold, or Stock Market basics.",
   },
   {
     key: "data",
-    label: "Ask My Data Query",
-    intro: "Credit/debit uploads, spending, profit, growth, and transaction percentages.",
+    label: "Analyze My Spending",
+    intro: "I can analyze your recent transactions and tell you where your money is going.",
   },
+  {
+    key: "budget",
+    label: "Plan a Trip Budget",
+    intro: "Planning a vacation? Let me help you estimate the costs and figure out how much to save.",
+  },
+  {
+    key: "tax",
+    label: "Tax Planning",
+    intro: "Need help saving on taxes? Ask me about Section 80C, HRA, and tax-saving instruments.",
+  }
 ];
 
 const formatCurrency = (value) =>
