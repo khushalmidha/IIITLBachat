@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import "./insights.css";
 import { getTransactions } from "../../utils/ApiRequest";
@@ -10,6 +10,7 @@ import moment from "moment";
 /* ── Stub Insights page — will be fully built in Phase 7 ── */
 const Insights = () => {
   const navigate = useNavigate();
+  const { activeWallet } = useOutletContext() || {};
   const [cUser, setcUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
@@ -36,6 +37,7 @@ const Insights = () => {
           userId: cUser._id,
           frequency: "custom",
           type: "all",
+          walletId: activeWallet?._id || undefined,
         });
         setTransactions(data.transactions || []);
       } catch (err) {
@@ -45,7 +47,7 @@ const Insights = () => {
       }
     };
     fetchData();
-  }, [cUser?._id]);
+  }, [cUser?._id, activeWallet?._id]);
 
   // Compute monthly data for last 6 months
   const monthlyData = useMemo(() => {
