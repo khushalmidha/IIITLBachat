@@ -416,6 +416,7 @@ const Home = () => {
                   <Form.Group className="mb-3" controlId="formSelectFrequency">
                     <Form.Label style={{ color: '#475569', fontWeight: 600 }}>Select Frequency</Form.Label>
                     <Form.Select
+                      className="filterDropdown"
                       name="frequency"
                       value={frequency}
                       onChange={handleChangeFrequency}
@@ -434,6 +435,7 @@ const Home = () => {
                   <Form.Group className="mb-3" controlId="formSelectFrequency">
                     <Form.Label style={{ color: '#475569', fontWeight: 600 }}>Type</Form.Label>
                     <Form.Select
+                      className="filterDropdown"
                       name="type"
                       value={type}
                       onChange={handleSetType}
@@ -451,6 +453,7 @@ const Home = () => {
                   <Form.Group className="mb-3" controlId="formSelectCategory">
                     <Form.Label style={{ color: '#475569', fontWeight: 600 }}>Category</Form.Label>
                     <Form.Select
+                      className="filterDropdown"
                       name="category"
                       value={category}
                       onChange={handleSetCategory}
@@ -617,49 +620,36 @@ const Home = () => {
                 </Modal>
               </div>
             </div>
-            <br />
-
-            {frequency === "custom" && view !== "line" && view !== "smart" && view !== "budget" ? (
-              <>
-                <div className="date">
-                  <div className="form-group">
-                    <label htmlFor="startDate" style={{ color: '#475569', fontWeight: 600, display: 'block', marginBottom: 6 }}>
-                      Start Date:
-                    </label>
-                    <div>
-                      <DatePicker
-                        selected={startDate}
-                        onChange={handleStartChange}
-                        selectsStart
-                        startDate={startDate}
-                        endDate={endDate}
-                      />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="endDate" style={{ color: '#475569', fontWeight: 600, display: 'block', marginBottom: 6 }}>
-                      End Date:
-                    </label>
-                    <div>
-                      <DatePicker
-                        selected={endDate}
-                        onChange={handleEndChange}
-                        selectsEnd
-                        startDate={startDate}
-                        endDate={endDate}
-                        minDate={startDate}
-                      />
-                    </div>
-                  </div>
+            {frequency === "custom" && view !== "line" && view !== "smart" && view !== "budget" && (
+              <div className="customDateContainer">
+                <div className="customDateGroup">
+                  <label htmlFor="startDate">Start Date:</label>
+                  <DatePicker
+                    className="customDateInput"
+                    selected={startDate}
+                    onChange={handleStartChange}
+                    selectsStart
+                    startDate={startDate}
+                    endDate={endDate}
+                    dateFormat="dd MMM yyyy"
+                    placeholderText="Select start date"
+                  />
                 </div>
-              </>
-            ) : (
-              <></>
-            )}
-
-            {view !== "line" && view !== "smart" && view !== "budget" && (
-              <div className="containerBtn">
-                <Button variant="primary" onClick={handleReset}>
+                <div className="customDateGroup">
+                  <label htmlFor="endDate">End Date:</label>
+                  <DatePicker
+                    className="customDateInput"
+                    selected={endDate}
+                    onChange={handleEndChange}
+                    selectsEnd
+                    startDate={startDate}
+                    endDate={endDate}
+                    minDate={startDate}
+                    dateFormat="dd MMM yyyy"
+                    placeholderText="Select end date"
+                  />
+                </div>
+                <Button className="resetFilterBtn" onClick={handleReset}>
                   Reset Filter
                 </Button>
               </div>
