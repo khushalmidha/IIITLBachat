@@ -54,18 +54,13 @@ app.use("/api/ai", aiRoutes);
 app.use("/api/wallet", walletRoutes);
 app.use("/api/budget", budgetRoutes);
 
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // Serve frontend static files in production
-const frontendPath = path.join(__dirname, "../frontend/build");
+const frontendPath = resolve(__dirname, "../frontend/build");
 app.use(express.static(frontendPath));
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(frontendPath, "index.html"));
+  res.sendFile(resolve(frontendPath, "index.html"));
 });
 
 app.use((err, req, res, next) => {
