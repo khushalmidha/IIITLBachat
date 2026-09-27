@@ -139,17 +139,14 @@ export const getAllTransactionController = async (req, res) => {
     }
 
     let userIdsToFetch = [userId];
-    const userWallets = await Wallet.find({
-      $or: [{ owner: userId }, { members: userId }]
-    });
-
-    if (userWallets.length > 0) {
-      userWallets.forEach(w => {
-        if (w.owner) userIdsToFetch.push(w.owner.toString());
-        if (w.members) w.members.forEach(m => userIdsToFetch.push(m.toString()));
-      });
-      userIdsToFetch = [...new Set(userIdsToFetch)];
+    if (req.body.walletId) {
+      const wallet = await Wallet.findById(req.body.walletId);
+      if (wallet) {
+        if (wallet.owner) userIdsToFetch.push(wallet.owner.toString());
+        if (wallet.members) wallet.members.forEach(m => userIdsToFetch.push(m.toString()));
+      }
     }
+    userIdsToFetch = [...new Set(userIdsToFetch)];
 
     const query = { user: { $in: userIdsToFetch } };
 

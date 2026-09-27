@@ -3,7 +3,7 @@ import { Modal, Button, Form, Tab, Nav, Badge, Spinner as BsSpinner } from "reac
 import axios from "axios";
 import { createWalletAPI, generateInviteAPI, joinWalletAPI, getMyWalletsAPI } from "../utils/ApiRequest";
 
-const FamilyModeModal = ({ show, onHide, user }) => {
+const FamilyModeModal = ({ show, onHide, user, activeWallet, setActiveWallet }) => {
   const [wallets, setWallets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [walletName, setWalletName] = useState("");
@@ -148,12 +148,18 @@ const FamilyModeModal = ({ show, onHide, user }) => {
                     return (
                       <div
                         key={w._id}
+                        onClick={() => {
+                          setActiveWallet(w);
+                          onHide();
+                        }}
                         style={{
                           padding: 16,
                           borderRadius: 12,
-                          background: "#ffffff",
-                          border: "1px solid #e2e8f0",
-                          boxShadow: "0 2px 8px rgba(0,0,0,0.05)"
+                          background: activeWallet?._id === w._id ? "#F3F0FF" : "#ffffff",
+                          border: activeWallet?._id === w._id ? "2px solid #6C47FF" : "1px solid #e2e8f0",
+                          boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                          cursor: "pointer",
+                          transition: "all 0.2s ease"
                         }}
                       >
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
@@ -164,7 +170,7 @@ const FamilyModeModal = ({ show, onHide, user }) => {
                         </div>
                         <div style={{ display: "flex", gap: 16, fontSize: 13, color: "#475569", marginBottom: 10 }}>
                           <span>👤 Owner: {w.owner?.name || "—"}</span>
-                          <span>🤝 Members: {w.members?.length > 0 ? w.members.map(m => m.name).join(', ') : "Not joined yet"}</span>
+                          <span>🤝 Members: {w.members?.length > 0 ? w.members.map(m => m.name || m).join(', ') : "Not joined yet"}</span>
                         </div>
                         {isOwner && (
                           <Button
@@ -190,6 +196,11 @@ const FamilyModeModal = ({ show, onHide, user }) => {
                         </Button>
                       </div>
                     </div>
+                  )}
+                  {activeWallet && (
+                    <Button variant="outline-danger" size="sm" onClick={() => { setActiveWallet(null); onHide(); }} style={{ marginTop: 10 }}>
+                      Disconnect Wallet (View Personal)
+                    </Button>
                   )}
                 </div>
               )}

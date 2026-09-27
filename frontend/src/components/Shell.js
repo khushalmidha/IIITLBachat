@@ -12,6 +12,7 @@ const navigation = [
 export function Shell({ isSharedWallet = false }) {
   const [user, setUser] = useState(null);
   const [showFamily, setShowFamily] = useState(false);
+  const [activeWallet, setActiveWallet] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -94,7 +95,7 @@ export function Shell({ isSharedWallet = false }) {
         <div className="app-context">
           <span>
             <span className="context-dot" />
-            {isSharedWallet ? "Shared Family Wallet" : "Personal Dashboard"}
+            {activeWallet ? `Wallet: ${activeWallet.name}` : "Personal Dashboard"}
           </span>
           <button onClick={() => setShowFamily(true)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'inherit', padding: 0, display: 'flex', alignItems: 'center', gap: '9px', fontSize: '14px' }}>
             <CircleHelp size={15} />{" "}
@@ -102,7 +103,7 @@ export function Shell({ isSharedWallet = false }) {
           </button>
         </div>
         <main id="main" tabIndex={-1}>
-          <Outlet />
+          <Outlet context={{ activeWallet, setActiveWallet }} />
         </main>
         <footer className="page-footer" style={{ marginTop: '40px', paddingBottom: '40px', display: 'flex', justifyContent: 'space-between', color: '#776982', fontSize: '13px' }}>
           <span>IIITL Bachat · AI Powered Finance Platform</span>
@@ -110,7 +111,13 @@ export function Shell({ isSharedWallet = false }) {
         </footer>
       </div>
       {showFamily && user && (
-        <FamilyModeModal show={showFamily} onHide={() => setShowFamily(false)} user={user} />
+        <FamilyModeModal
+          show={showFamily}
+          onHide={() => setShowFamily(false)}
+          user={user}
+          activeWallet={activeWallet}
+          setActiveWallet={setActiveWallet}
+        />
       )}
     </div>
   );

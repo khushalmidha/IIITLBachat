@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { Button, Modal, Form, Container } from "react-bootstrap";
 import "./home.css";
 import { addTransaction, getTransactions } from "../../utils/ApiRequest";
@@ -25,6 +25,7 @@ import VoiceExpenseButton from "../../components/VoiceExpenseButton";
 
 const Home = () => {
   const navigate = useNavigate();
+  const { activeWallet } = useOutletContext() || {};
 
   const toastOptions = useMemo(() => ({
     position: "bottom-right",
@@ -262,7 +263,6 @@ const Home = () => {
       try {
         setLoading(true);
 
-        console.log(cUser._id, frequency, startDate, endDate, type);
         const res = await axios.post(getTransactions, {
           userId: cUser._id,
           frequency: frequency,
@@ -270,16 +270,15 @@ const Home = () => {
           endDate: endDate,
           type: type,
           category: category,
+          walletId: activeWallet?._id || undefined,
         });
-        const data = res.data
-        console.log(data);
-        const  test = data?.transactions?.sort((a,b) => {
+        const data = res.data;
+        const test = data?.transactions?.sort((a,b) => {
           if(a.date === b.date){
             return (b.createdAt - a.createdAt);
           }
           return (b.date - a.date);
-        }) || []
-        console.log(test)
+        }) || [];
         setTransactions(test);
 
         setLoading(false);
@@ -290,7 +289,7 @@ const Home = () => {
     };
 
     fetchAllTransactions();
-  }, [avatar, cUser?._id, refresh, frequency, endDate, type, startDate, category, toastOptions]);
+  }, [avatar, cUser?._id, refresh, frequency, endDate, type, startDate, category, toastOptions, activeWallet?._id]);
 
   // Real-time polling for shared wallets (Phase 8)
   useEffect(() => {
