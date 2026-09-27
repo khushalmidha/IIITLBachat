@@ -55,6 +55,10 @@ app.use("/api/wallet", walletRoutes);
 app.use("/api/budget", budgetRoutes);
 
 import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Serve frontend static files in production
 const frontendPath = path.join(__dirname, "../frontend/build");

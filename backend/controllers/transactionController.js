@@ -3,6 +3,7 @@ import Transaction from "../models/TransactionModel.js";
 import User from "../models/UserSchema.js";
 import WeeklyBudget from "../models/WeeklyBudgetModel.js";
 import Exception from "../models/ExceptionModel.js";
+import Wallet from "../models/WalletModel.js";
 
 const transactionFields = [
   "title",
@@ -137,7 +138,20 @@ export const getAllTransactionController = async (req, res) => {
       });
     }
 
-    const query = { user: userId };
+    let userIdsToFetch = [userId];
+    const userWallets = await Wallet.find({
+      $or: [{ owner: userId }, { members: userId }]
+    });
+
+    if (userWallets.length > 0) {
+      userWallets.forEach(w => {
+        if (w.owner) userIdsToFetch.push(w.owner.toString());
+        if (w.members) w.members.forEach(m => userIdsToFetch.push(m.toString()));
+      });
+      userIdsToFetch = [...new Set(userIdsToFetch)];
+    }
+
+    const query = { user: { $in: userIdsToFetch } };
 
     if (type !== "all") {
       query.transactionType = String(type).toLowerCase();

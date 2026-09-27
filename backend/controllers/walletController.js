@@ -87,11 +87,11 @@ export const joinWallet = async (req, res) => {
       return res.status(400).json({ success: false, message: "You cannot join your own wallet" });
     }
 
-    if (wallet.supporter) {
-      return res.status(400).json({ success: false, message: "This wallet already has a supporter" });
+    if (wallet.members.includes(userId)) {
+      return res.status(400).json({ success: false, message: "You are already a member of this wallet" });
     }
 
-    wallet.supporter = userId;
+    wallet.members.push(userId);
     await wallet.save();
 
     invite.used = true;
@@ -115,10 +115,10 @@ export const getMyWallets = async (req, res) => {
     }
 
     const wallets = await Wallet.find({
-      $or: [{ owner: userId }, { supporter: userId }],
+      $or: [{ owner: userId }, { members: userId }],
     })
       .populate("owner", "name email avatarImage")
-      .populate("supporter", "name email avatarImage")
+      .populate("members", "name email avatarImage")
       .sort({ createdAt: -1 });
 
     return res.status(200).json({ success: true, wallets });
@@ -138,10 +138,10 @@ export const getWalletDetails = async (req, res) => {
 
     const wallet = await Wallet.findOne({
       _id: walletId,
-      $or: [{ owner: userId }, { supporter: userId }],
+      $or: [{ owner: userId }, { members: userId }],
     })
       .populate("owner", "name email avatarImage")
-      .populate("supporter", "name email avatarImage");
+      .populate("members", "name email avatarImage");
 
     if (!wallet) {
       return res.status(404).json({ success: false, message: "Wallet not found" });

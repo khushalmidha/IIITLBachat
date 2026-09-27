@@ -11,11 +11,10 @@ const walletSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  supporter: {
+  members: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    default: null,
-  },
+  }],
   weeklyBudget: {
     type: Number,
     default: 0,
@@ -27,7 +26,7 @@ const walletSchema = new mongoose.Schema({
 });
 
 walletSchema.index({ owner: 1 });
-walletSchema.index({ supporter: 1 });
+walletSchema.index({ members: 1 });
 
 const Wallet = mongoose.model("Wallet", walletSchema);
 

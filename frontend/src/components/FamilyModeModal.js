@@ -164,9 +164,9 @@ const FamilyModeModal = ({ show, onHide, user }) => {
                         </div>
                         <div style={{ display: "flex", gap: 16, fontSize: 13, color: "#475569", marginBottom: 10 }}>
                           <span>👤 Owner: {w.owner?.name || "—"}</span>
-                          <span>🤝 Supporter: {w.supporter?.name || "Not joined yet"}</span>
+                          <span>🤝 Members: {w.members?.length > 0 ? w.members.map(m => m.name).join(', ') : "Not joined yet"}</span>
                         </div>
-                        {isOwner && !w.supporter && (
+                        {isOwner && (
                           <Button
                             size="sm"
                             onClick={() => handleGenerateInvite(w._id)}
